@@ -87,7 +87,6 @@ Restaurant::Restaurant(const std::string &configFilePath) {
     nextDishId = tempNextDishId;
     //
 
-
     if (false){
         // TODO: more verifying here?
         // TODO: error here?
