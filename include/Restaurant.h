@@ -23,6 +23,7 @@ public:
     int generateDishId();
     int generateCustomerId();
     DishType getType(std::string &type_s);
+    bool startsWith(std::string a_string, std::string prefix);
     void stop();
 
 private:

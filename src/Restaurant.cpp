@@ -142,8 +142,29 @@ void Restaurant::start() {
             stop();
         }
 
-        else if(cmd == "open table table table"){
+        else if(startsWith(cmd, "open")){
+            std::vector<std::string> words = split(cmd, ' ');
+            int tableId = std::stoi(words[1]);
+            std::vector<Customer *> customers;
 
+            for (int i = 0; i < words.size(); ++i) {
+                if (i >= 2){ // customer section
+                    std::string customer = words[i];
+                    std::vector<std::string> pair = split(customer, ',');
+                    std::string c_name = pair[0];
+                    std::string c_type = pair[1];
+                    int c_id = generateCustomerId();
+                    if (c_type == "veg"){
+                        customers.push_back(new VegetarianCustomer(c_name, c_id));
+                    }else if (c_type == "chp"){
+                        customers.push_back(new CheapCustomer(c_name, c_id));
+                    } else if (c_type == "spc"){
+                        customers.push_back(new SpicyCustomer(c_name, c_id));
+                    } else if (c_type == "alc"){
+                        customers.push_back(new AlchoholicCustomer(c_name, c_id));
+                    }
+                }
+            }
         }
 
         else if(cmd == "open table table table"){
@@ -228,4 +249,17 @@ Restaurant::~Restaurant() {
 void Restaurant::stop() {
     running = false;
 }
+
+bool Restaurant::startsWith(std::string a_string, std::string prefix) {
+    int len = prefix.size();
+    if (a_string.size() < len){
+        return false;
+    }else{
+        auto res = std::mismatch(prefix.begin(), prefix.end(), a_string.begin());
+
+        return (res.first == prefix.end());
+    }
+
+}
+
 
