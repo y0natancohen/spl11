@@ -165,9 +165,19 @@ void Restaurant::start() {
                     }
                 }
             }
+            OpenTable ot = OpenTable(tableId, customers);
+            ot.act(*this);
         }
 
-        else if(cmd == "open table table table"){
+        else if(startsWith(cmd, "order")){
+            std::string errMsg = "Table does not exist or is not open";
+            std::vector<std::string > words = split(cmd, ' ');
+            int tableNum = std::stoi(words[1]);
+            Order order = Order(tableNum);
+            order.act(*this);
+
+            // order act?
+            // order complete?
 
         }
 
