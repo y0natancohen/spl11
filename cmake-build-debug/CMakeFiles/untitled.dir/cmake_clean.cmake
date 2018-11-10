@@ -5,6 +5,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/untitled.dir/src/Dish.cpp.o"
   "CMakeFiles/untitled.dir/src/Restaurant.cpp.o"
   "CMakeFiles/untitled.dir/src/Table.cpp.o"
+  "CMakeFiles/untitled.dir/src/SortableDish.cpp.o"
   "untitled.pdb"
   "untitled"
 )

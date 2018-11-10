@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/home/yonatan/CLionProjects/spl11/src/Dish.cpp" "/home/yonatan/CLionProjects/spl11/cmake-build-debug/CMakeFiles/untitled.dir/src/Dish.cpp.o"
   "/home/yonatan/CLionProjects/spl11/src/Main.cpp" "/home/yonatan/CLionProjects/spl11/cmake-build-debug/CMakeFiles/untitled.dir/src/Main.cpp.o"
   "/home/yonatan/CLionProjects/spl11/src/Restaurant.cpp" "/home/yonatan/CLionProjects/spl11/cmake-build-debug/CMakeFiles/untitled.dir/src/Restaurant.cpp.o"
+  "/home/yonatan/CLionProjects/spl11/src/SortableDish.cpp" "/home/yonatan/CLionProjects/spl11/cmake-build-debug/CMakeFiles/untitled.dir/src/SortableDish.cpp.o"
   "/home/yonatan/CLionProjects/spl11/src/Table.cpp" "/home/yonatan/CLionProjects/spl11/cmake-build-debug/CMakeFiles/untitled.dir/src/Table.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")

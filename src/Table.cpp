@@ -6,14 +6,16 @@
 #include <iostream>
 
 
-Table::Table(int t_capacity): capacity(t_capacity) {}
+Table::Table(int t_capacity): capacity(t_capacity) {
+    open = false;
+}
 
 int Table::getCapacity() const {
     return capacity;
 }
 
 void Table::addCustomer(Customer *customer) {
-    // TODO: more things here
+    // TODO: more things here?
     customersList.push_back(customer);
 
 }
@@ -47,8 +49,34 @@ std::vector<OrderPair> &Table::getOrders() {
 }
 
 void Table::order(const std::vector<Dish> &menu) {
-    // TODO: this
+    for (auto customer: customersList) {
+        std::cout << customer->getName() + " ordering"<< std::endl;
+//        bool cond = true;
+//        if (cond){
+//            std::cout << customer->getDrinksHad() << std::endl;
+//        }
 
+        std::vector<int> dish_ids = customer->order(menu);
+        // TODO: this line causes segmentation fault.... why?  :(
+
+        std::cout << customer->getName() + " ordered"<< std::endl;
+        for (auto dish_id: dish_ids){
+            orderList.push_back(
+                    OrderPair(dish_id, getDish(menu, dish_id))
+                    );
+            std::string print_s = customer->getName() + " ordered " + getDish(menu, dish_id).getName();
+            std::cout <<  print_s << std::endl;
+        }
+    }
+
+}
+
+Dish Table::getDish(const std::vector<Dish> &menu, int d_id) {
+    for (auto dish:menu){
+        if (dish.getId() == d_id){
+            return dish;
+        }
+    }
 }
 
 void Table::openTable() {
@@ -72,3 +100,17 @@ bool Table::isOpen() {
     return open;
 }
 
+Table::~Table() {
+    for (auto customer: customersList){
+        delete customer;
+    }
+    customersList.clear();
+}
+
+void Table::doOpen() {
+    open = true;
+}
+
+void Table::doClose() {
+    open = false;
+}

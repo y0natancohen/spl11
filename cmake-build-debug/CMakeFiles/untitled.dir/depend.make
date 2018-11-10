@@ -4,10 +4,14 @@
 CMakeFiles/untitled.dir/src/Action.cpp.o: ../include/Action.h
 CMakeFiles/untitled.dir/src/Action.cpp.o: ../include/Customer.h
 CMakeFiles/untitled.dir/src/Action.cpp.o: ../include/Dish.h
+CMakeFiles/untitled.dir/src/Action.cpp.o: ../include/Restaurant.h
+CMakeFiles/untitled.dir/src/Action.cpp.o: ../include/SortableDish.h
+CMakeFiles/untitled.dir/src/Action.cpp.o: ../include/Table.h
 CMakeFiles/untitled.dir/src/Action.cpp.o: ../src/Action.cpp
 
 CMakeFiles/untitled.dir/src/Customer.cpp.o: ../include/Customer.h
 CMakeFiles/untitled.dir/src/Customer.cpp.o: ../include/Dish.h
+CMakeFiles/untitled.dir/src/Customer.cpp.o: ../include/SortableDish.h
 CMakeFiles/untitled.dir/src/Customer.cpp.o: ../src/Customer.cpp
 
 CMakeFiles/untitled.dir/src/Dish.cpp.o: ../include/Dish.h
@@ -17,6 +21,7 @@ CMakeFiles/untitled.dir/src/Main.cpp.o: ../include/Action.h
 CMakeFiles/untitled.dir/src/Main.cpp.o: ../include/Customer.h
 CMakeFiles/untitled.dir/src/Main.cpp.o: ../include/Dish.h
 CMakeFiles/untitled.dir/src/Main.cpp.o: ../include/Restaurant.h
+CMakeFiles/untitled.dir/src/Main.cpp.o: ../include/SortableDish.h
 CMakeFiles/untitled.dir/src/Main.cpp.o: ../include/Table.h
 CMakeFiles/untitled.dir/src/Main.cpp.o: ../src/Main.cpp
 
@@ -24,11 +29,17 @@ CMakeFiles/untitled.dir/src/Restaurant.cpp.o: ../include/Action.h
 CMakeFiles/untitled.dir/src/Restaurant.cpp.o: ../include/Customer.h
 CMakeFiles/untitled.dir/src/Restaurant.cpp.o: ../include/Dish.h
 CMakeFiles/untitled.dir/src/Restaurant.cpp.o: ../include/Restaurant.h
+CMakeFiles/untitled.dir/src/Restaurant.cpp.o: ../include/SortableDish.h
 CMakeFiles/untitled.dir/src/Restaurant.cpp.o: ../include/Table.h
 CMakeFiles/untitled.dir/src/Restaurant.cpp.o: ../src/Restaurant.cpp
 
+CMakeFiles/untitled.dir/src/SortableDish.cpp.o: ../include/Dish.h
+CMakeFiles/untitled.dir/src/SortableDish.cpp.o: ../include/SortableDish.h
+CMakeFiles/untitled.dir/src/SortableDish.cpp.o: ../src/SortableDish.cpp
+
 CMakeFiles/untitled.dir/src/Table.cpp.o: ../include/Customer.h
 CMakeFiles/untitled.dir/src/Table.cpp.o: ../include/Dish.h
+CMakeFiles/untitled.dir/src/Table.cpp.o: ../include/SortableDish.h
 CMakeFiles/untitled.dir/src/Table.cpp.o: ../include/Table.h
 CMakeFiles/untitled.dir/src/Table.cpp.o: ../src/Table.cpp
 

@@ -25,6 +25,8 @@ public:
     DishType getType(std::string &type_s);
     bool startsWith(std::string a_string, std::string prefix);
     void stop();
+    void print(std::string s, int i);
+    void print(std::string s);
 
 private:
     bool running;

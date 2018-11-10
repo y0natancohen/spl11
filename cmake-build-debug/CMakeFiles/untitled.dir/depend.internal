@@ -5,10 +5,14 @@ CMakeFiles/untitled.dir/src/Action.cpp.o
  /home/yonatan/CLionProjects/spl11/include/Action.h
  /home/yonatan/CLionProjects/spl11/include/Customer.h
  /home/yonatan/CLionProjects/spl11/include/Dish.h
+ /home/yonatan/CLionProjects/spl11/include/Restaurant.h
+ /home/yonatan/CLionProjects/spl11/include/SortableDish.h
+ /home/yonatan/CLionProjects/spl11/include/Table.h
  /home/yonatan/CLionProjects/spl11/src/Action.cpp
 CMakeFiles/untitled.dir/src/Customer.cpp.o
  /home/yonatan/CLionProjects/spl11/include/Customer.h
  /home/yonatan/CLionProjects/spl11/include/Dish.h
+ /home/yonatan/CLionProjects/spl11/include/SortableDish.h
  /home/yonatan/CLionProjects/spl11/src/Customer.cpp
 CMakeFiles/untitled.dir/src/Dish.cpp.o
  /home/yonatan/CLionProjects/spl11/include/Dish.h
@@ -18,6 +22,7 @@ CMakeFiles/untitled.dir/src/Main.cpp.o
  /home/yonatan/CLionProjects/spl11/include/Customer.h
  /home/yonatan/CLionProjects/spl11/include/Dish.h
  /home/yonatan/CLionProjects/spl11/include/Restaurant.h
+ /home/yonatan/CLionProjects/spl11/include/SortableDish.h
  /home/yonatan/CLionProjects/spl11/include/Table.h
  /home/yonatan/CLionProjects/spl11/src/Main.cpp
 CMakeFiles/untitled.dir/src/Restaurant.cpp.o
@@ -25,10 +30,16 @@ CMakeFiles/untitled.dir/src/Restaurant.cpp.o
  /home/yonatan/CLionProjects/spl11/include/Customer.h
  /home/yonatan/CLionProjects/spl11/include/Dish.h
  /home/yonatan/CLionProjects/spl11/include/Restaurant.h
+ /home/yonatan/CLionProjects/spl11/include/SortableDish.h
  /home/yonatan/CLionProjects/spl11/include/Table.h
  /home/yonatan/CLionProjects/spl11/src/Restaurant.cpp
+CMakeFiles/untitled.dir/src/SortableDish.cpp.o
+ /home/yonatan/CLionProjects/spl11/include/Dish.h
+ /home/yonatan/CLionProjects/spl11/include/SortableDish.h
+ /home/yonatan/CLionProjects/spl11/src/SortableDish.cpp
 CMakeFiles/untitled.dir/src/Table.cpp.o
  /home/yonatan/CLionProjects/spl11/include/Customer.h
  /home/yonatan/CLionProjects/spl11/include/Dish.h
+ /home/yonatan/CLionProjects/spl11/include/SortableDish.h
  /home/yonatan/CLionProjects/spl11/include/Table.h
  /home/yonatan/CLionProjects/spl11/src/Table.cpp

@@ -21,6 +21,8 @@ string
 -
 Dish.h
 /home/yonatan/CLionProjects/spl11/include/Dish.h
+SortableDish.h
+/home/yonatan/CLionProjects/spl11/include/SortableDish.h
 
 /home/yonatan/CLionProjects/spl11/include/Dish.h
 string
@@ -40,6 +42,10 @@ Table.h
 Action.h
 /home/yonatan/CLionProjects/spl11/include/Action.h
 
+/home/yonatan/CLionProjects/spl11/include/SortableDish.h
+Dish.h
+/home/yonatan/CLionProjects/spl11/include/Dish.h
+
 /home/yonatan/CLionProjects/spl11/include/Table.h
 vector
 -
@@ -51,10 +57,26 @@ Dish.h
 /home/yonatan/CLionProjects/spl11/src/Action.cpp
 ../include/Action.h
 /home/yonatan/CLionProjects/spl11/include/Action.h
-
-/home/yonatan/CLionProjects/spl11/src/Customer.cpp
+../include/Table.h
+/home/yonatan/CLionProjects/spl11/include/Table.h
+../include/Restaurant.h
+/home/yonatan/CLionProjects/spl11/include/Restaurant.h
 ../include/Customer.h
 /home/yonatan/CLionProjects/spl11/include/Customer.h
+../include/Dish.h
+/home/yonatan/CLionProjects/spl11/include/Dish.h
+
+/home/yonatan/CLionProjects/spl11/src/Customer.cpp
+iostream
+-
+algorithm
+-
+../include/Customer.h
+/home/yonatan/CLionProjects/spl11/include/Customer.h
+../include/Dish.h
+/home/yonatan/CLionProjects/spl11/include/Dish.h
+../include/SortableDish.h
+/home/yonatan/CLionProjects/spl11/include/SortableDish.h
 
 /home/yonatan/CLionProjects/spl11/src/Dish.cpp
 ../include/Dish.h
@@ -79,6 +101,12 @@ vector
 -
 ../include/Restaurant.h
 /home/yonatan/CLionProjects/spl11/include/Restaurant.h
+
+/home/yonatan/CLionProjects/spl11/src/SortableDish.cpp
+../include/Dish.h
+/home/yonatan/CLionProjects/spl11/include/Dish.h
+../include/SortableDish.h
+/home/yonatan/CLionProjects/spl11/include/SortableDish.h
 
 /home/yonatan/CLionProjects/spl11/src/Table.cpp
 ../include/Table.h

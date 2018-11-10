@@ -258,6 +258,33 @@ src/Restaurant.cpp.s:
 	$(MAKE) -f CMakeFiles/untitled.dir/build.make CMakeFiles/untitled.dir/src/Restaurant.cpp.s
 .PHONY : src/Restaurant.cpp.s
 
+src/SortableDish.o: src/SortableDish.cpp.o
+
+.PHONY : src/SortableDish.o
+
+# target to build an object file
+src/SortableDish.cpp.o:
+	$(MAKE) -f CMakeFiles/untitled.dir/build.make CMakeFiles/untitled.dir/src/SortableDish.cpp.o
+.PHONY : src/SortableDish.cpp.o
+
+src/SortableDish.i: src/SortableDish.cpp.i
+
+.PHONY : src/SortableDish.i
+
+# target to preprocess a source file
+src/SortableDish.cpp.i:
+	$(MAKE) -f CMakeFiles/untitled.dir/build.make CMakeFiles/untitled.dir/src/SortableDish.cpp.i
+.PHONY : src/SortableDish.cpp.i
+
+src/SortableDish.s: src/SortableDish.cpp.s
+
+.PHONY : src/SortableDish.s
+
+# target to generate assembly for a file
+src/SortableDish.cpp.s:
+	$(MAKE) -f CMakeFiles/untitled.dir/build.make CMakeFiles/untitled.dir/src/SortableDish.cpp.s
+.PHONY : src/SortableDish.cpp.s
+
 src/Table.o: src/Table.cpp.o
 
 .PHONY : src/Table.o
@@ -309,6 +336,9 @@ help:
 	@echo "... src/Restaurant.o"
 	@echo "... src/Restaurant.i"
 	@echo "... src/Restaurant.s"
+	@echo "... src/SortableDish.o"
+	@echo "... src/SortableDish.i"
+	@echo "... src/SortableDish.s"
 	@echo "... src/Table.o"
 	@echo "... src/Table.i"
 	@echo "... src/Table.s"

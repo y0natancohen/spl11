@@ -22,8 +22,7 @@ Restaurant::Restaurant(const std::string &configFilePath) {
 
     // going over the lines
 
-    int num_tables_index = 0;
-    int tables_desc = 0;
+    int num_of_tables_index = 0;
     int tables_desc_index = 0;
     int menu_index = 0;
 
@@ -31,7 +30,7 @@ Restaurant::Restaurant(const std::string &configFilePath) {
 //        std::cout << i << std::endl;
 //        std::cout << lines[i] << std::endl;
         if (lines[i] == "#number of tables"){
-            num_tables_index = i + 1;
+            num_of_tables_index = i + 1;
         }
         if (lines[i] == "#tables description"){
             tables_desc_index = i + 1;
@@ -45,21 +44,22 @@ Restaurant::Restaurant(const std::string &configFilePath) {
 
     // making the tables
 
-    int num_tables = std::stoi(lines[num_tables_index]);
+    int num_tables = std::stoi(lines[num_of_tables_index]);
+    print("num of tables is", num_tables);
 
     std::string table_desc_s = lines[tables_desc_index];
     std::vector<std::string> sizes = split(table_desc_s, ',');
 
     if (sizes.size() != num_tables){
         std::cout << errMsg << std::endl;
-        std::cout << "got" << std::endl;
-        std::cout << sizes.size() << std::endl;
-        std::cout << "number of tables is" + num_tables << std::endl;
+        print("got ", sizes.size());
+        print("number of tables is ", num_tables);
         // TODO: error here?
         return;
     }
     for (auto size_s: sizes){
         int size = std::stoi(size_s);
+        print("making table with seats ", size);
         Table *table = new Table(size);
         tables.push_back(table);
     }
@@ -135,18 +135,25 @@ void Restaurant::start() {
     bool keepGoing = true;
     while (running){
         std::string cmd;
-        std::cin >> cmd;
+        std::getline(std::cin, cmd);
 
         if (cmd == "closeall"){
+            std::cout << "received close all" << std::endl;
             // TODO: more things
             stop();
         }
 
+        // open table
+
         else if(startsWith(cmd, "open")){
+            std::cout << "received open table" << std::endl;
+            std::cout << cmd << std::endl;
             std::vector<std::string> words = split(cmd, ' ');
             int tableId = std::stoi(words[1]);
-            std::vector<Customer *> customers;
+            print("table id is", tableId);
 
+            std::vector<Customer *> customers;
+            bool all_good = true;
             for (int i = 0; i < words.size(); ++i) {
                 if (i >= 2){ // customer section
                     std::string customer = words[i];
@@ -156,32 +163,42 @@ void Restaurant::start() {
                     int c_id = generateCustomerId();
                     if (c_type == "veg"){
                         customers.push_back(new VegetarianCustomer(c_name, c_id));
+                        std::cout << "making a veg" << std::endl;
                     }else if (c_type == "chp"){
                         customers.push_back(new CheapCustomer(c_name, c_id));
+                        std::cout << "making a cheap" << std::endl;
                     } else if (c_type == "spc"){
                         customers.push_back(new SpicyCustomer(c_name, c_id));
+                        std::cout << "making a spicy" << std::endl;
                     } else if (c_type == "alc"){
                         customers.push_back(new AlchoholicCustomer(c_name, c_id));
+                        std::cout << "making a alcoholic" << std::endl;
+                    } else{
+                        all_good = false;
+                        print("unknown customer type - " + c_type); // TODO: what here?
                     }
                 }
             }
-            OpenTable ot = OpenTable(tableId, customers);
-            ot.act(*this);
+            if (all_good) {
+                OpenTable ot = OpenTable(tableId, customers, cmd);
+                ot.act(*this);
+            }
         }
+
+        // order from table-id
 
         else if(startsWith(cmd, "order")){
-            std::string errMsg = "Table does not exist or is not open";
+            std::cout << "received order" << std::endl;
             std::vector<std::string > words = split(cmd, ' ');
             int tableNum = std::stoi(words[1]);
-            Order order = Order(tableNum);
+            Order order = Order(tableNum, cmd);
             order.act(*this);
-
-            // order act?
-            // order complete?
-
         }
 
-        else if(cmd == "open table table table"){
+        // move customer
+
+        else if(startsWith(cmd, "move")){
+            std::cout << "received move" << std::endl;
 
         }
 
@@ -207,7 +224,11 @@ int Restaurant::getNumOfTables() const {
 }
 
 Table *Restaurant::getTable(int ind) {
-    return tables[0];
+    if (ind <= tables.size()){
+        return tables[ind];
+    } else{
+        return nullptr;
+    }
 }
 
 const std::vector<BaseAction *> &Restaurant::getActionsLog() const {
@@ -272,4 +293,12 @@ bool Restaurant::startsWith(std::string a_string, std::string prefix) {
 
 }
 
+void Restaurant::print(std::string s, int i) {
+    std::cout << s + std::to_string(i) << std::endl;
+}
+
+void Restaurant::print(std::string s) {
+    std::cout << s << std::endl;
+
+}
 

@@ -96,6 +96,9 @@
 		<Unit filename="/home/yonatan/CLionProjects/spl11/include/Restaurant.h">
 			<Option target="untitled"/>
 		</Unit>
+		<Unit filename="/home/yonatan/CLionProjects/spl11/include/SortableDish.h">
+			<Option target="untitled"/>
+		</Unit>
 		<Unit filename="/home/yonatan/CLionProjects/spl11/include/Table.h">
 			<Option target="untitled"/>
 		</Unit>
@@ -112,6 +115,9 @@
 			<Option target="untitled"/>
 		</Unit>
 		<Unit filename="/home/yonatan/CLionProjects/spl11/src/Restaurant.cpp">
+			<Option target="untitled"/>
+		</Unit>
+		<Unit filename="/home/yonatan/CLionProjects/spl11/src/SortableDish.cpp">
 			<Option target="untitled"/>
 		</Unit>
 		<Unit filename="/home/yonatan/CLionProjects/spl11/src/Table.cpp">
