@@ -1,4 +1,9 @@
 *.xml
 /.idea/
 .idea/workspace.xml
-cmake-build-debug/
+
+cmake-build-debug/CMakeFiles/
+cmake-build-debug/cmake_install.cmake
+cmake-build-debug/CMakeCache.txt
+cmake-build-debug/untitled
+cmake-build-debug/untitled.cbp
