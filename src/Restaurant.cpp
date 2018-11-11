@@ -140,6 +140,8 @@ void Restaurant::start() {
         if (cmd == "closeall"){
             std::cout << "received close all" << std::endl;
             // TODO: more things
+            // TODO: create CloseAll Action
+
             stop();
         }
 
@@ -221,8 +223,13 @@ void Restaurant::start() {
 
         }
 
-        else if(cmd == "open table table table"){
-
+        else if(startsWith(cmd, "close ")){ // no collision with
+                                            // closeall because it was before
+            std::cout << "received close " << std::endl;
+            std::vector<std::string > words = split(cmd, ' ');
+            int tableNum = std::stoi(words[1]);
+            Close close = Close(tableNum, cmd);
+            close.act(*this);
         }
 
         else if(cmd == "open table table table"){

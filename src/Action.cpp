@@ -133,3 +133,17 @@ std::string Order::toString() const {
     return s;
 }
 
+// close
+
+Close::Close(int id, std::string cmd):
+        BaseAction(cmd),
+        tableId(id) {}
+
+void Close::act(Restaurant &restaurant) {
+
+}
+
+std::string Close::toString() const {
+    std::string s = "a very nice close table";
+    return s;
+}
