@@ -216,7 +216,12 @@ std::vector<int> AlchoholicCustomer::order(const std::vector<Dish> &menu) {
     if (alcohols.size() > 0){
 
         sortByPrice(alcohols);
-        int nth_lowest_price = alcohols[drinksHad].getPrice();
+        int nth_lowest_price;
+        if (drinksHad >= alcohols.size()){
+            nth_lowest_price = alcohols[alcohols.size() -1].getPrice(); //most expensive
+        }else{
+            nth_lowest_price = alcohols[drinksHad].getPrice(); // nth lowest
+        }
         std::vector<SortableDish> same_prices;
         for (auto dish: alcohols){
             if (dish.getPrice() == nth_lowest_price){

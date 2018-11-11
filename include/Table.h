@@ -25,6 +25,7 @@ public:
     void doOpen();
     void doClose();
     Dish getDish(const std::vector<Dish> &menu, int d_id);
+    void clearCustomers();
 
 private:
     int capacity;

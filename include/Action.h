@@ -38,6 +38,7 @@ public:
     virtual ~OpenTable();
     void act(Restaurant &restaurant);
     std::string toString() const;
+//    void clearCustomers();
 private:
 	const int tableId;
 	const std::vector<Customer *> customers;

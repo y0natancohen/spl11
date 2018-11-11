@@ -180,8 +180,25 @@ void Restaurant::start() {
                 }
             }
             if (all_good) {
-                OpenTable ot = OpenTable(tableId, customers, cmd);
+                // Table is responsible for customers
+
+                OpenTable ot = OpenTable(tableId, tables[tableId]->getCustomers(), cmd);
                 ot.act(*this);
+
+                if (ot.getStatus() == ERROR){
+                    for (auto customer : customers){
+                        delete customer;
+                    }
+//                    ot.clearCustomers(); // its not needed because Table holds
+//                                         // the same arr as openTable
+                }else{
+                    tables[tableId]->doOpen();
+
+                    for (auto customer : customers){
+//                        std::cout << "inserting a customer to Table.customerList" << std::endl;
+                        tables[tableId]->addCustomer(customer);
+                    }
+                }
             }
         }
 

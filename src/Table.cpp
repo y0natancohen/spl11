@@ -49,17 +49,20 @@ std::vector<OrderPair> &Table::getOrders() {
 }
 
 void Table::order(const std::vector<Dish> &menu) {
+//    std::cout << "inside Table.order"<< std::endl;
+//    std::cout << customersList.size() << std::endl;
     for (auto customer: customersList) {
-        std::cout << customer->getName() + " ordering"<< std::endl;
+//        std::cout << "working on customer"<< std::endl;
+//        std::cout <<  customer->getName()<< std::endl;
+//        std::cout << customer->getName() + " ordering"<< std::endl;
 //        bool cond = true;
 //        if (cond){
 //            std::cout << customer->getDrinksHad() << std::endl;
 //        }
 
         std::vector<int> dish_ids = customer->order(menu);
-        // TODO: this line causes segmentation fault.... why?  :(
 
-        std::cout << customer->getName() + " ordered"<< std::endl;
+//        std::cout << customer->getName() + " ordered"<< std::endl;
         for (auto dish_id: dish_ids){
             orderList.push_back(
                     OrderPair(dish_id, getDish(menu, dish_id))
@@ -113,4 +116,8 @@ void Table::doOpen() {
 
 void Table::doClose() {
     open = false;
+}
+
+void Table::clearCustomers() {
+    customersList.clear();
 }

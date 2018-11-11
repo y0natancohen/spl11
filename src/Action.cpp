@@ -53,8 +53,12 @@ std::string BaseAction::baseToString() const {
 //}
 
 OpenTable::OpenTable(int id, std::vector<Customer *> &customersList, std::string cmd):
-        BaseAction(cmd),
-        tableId(id), customers(customersList) {
+                    BaseAction(cmd), tableId(id),
+                    customers(customersList) {  // at this stage customerList is empty,
+                                                // but it will be filled, it is pointing to Table.customers
+//    for (auto customer : customersList){
+//        customers.push_back(customer);
+//    }
     //TODO: maybe copying the customers one by one?
 }
 
@@ -74,11 +78,6 @@ void OpenTable::act(Restaurant &restaurant) {
         return;
     }
 
-    table->doOpen();
-
-    for (auto customer : customers){
-        table->addCustomer(customer);
-    }
     complete();
 
 }
@@ -95,6 +94,10 @@ OpenTable::~OpenTable() {
 //    customers.clear();
 // customers is const
 }
+
+//void OpenTable::clearCustomers() {
+//    customers.clear();
+//}
 
 
 //Order::Order(int id): tableId(id) {}
