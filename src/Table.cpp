@@ -65,7 +65,7 @@ void Table::order(const std::vector<Dish> &menu) {
 //        std::cout << customer->getName() + " ordered"<< std::endl;
         for (auto dish_id: dish_ids){
             orderList.push_back(
-                    OrderPair(dish_id, getDish(menu, dish_id))
+                    OrderPair(customer->getId(), getDish(menu, dish_id))
                     );
             std::string print_s = customer->getName() + " ordered " + getDish(menu, dish_id).getName();
             std::cout <<  print_s << std::endl;

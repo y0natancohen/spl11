@@ -146,6 +146,7 @@ void Restaurant::start() {
         // open table
 
         else if(startsWith(cmd, "open")){
+
             std::cout << "received open table" << std::endl;
             std::cout << cmd << std::endl;
             std::vector<std::string> words = split(cmd, ' ');
@@ -205,6 +206,7 @@ void Restaurant::start() {
         // order from table-id
 
         else if(startsWith(cmd, "order")){
+
             std::cout << "received order" << std::endl;
             std::vector<std::string > words = split(cmd, ' ');
             int tableNum = std::stoi(words[1]);
