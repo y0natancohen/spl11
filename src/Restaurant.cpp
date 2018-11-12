@@ -8,7 +8,8 @@
 #include <vector>
 #include "../include/Restaurant.h"
 
-Restaurant::Restaurant() : nextCustomerId(0), nextDishId(0) {}
+Restaurant::Restaurant() : nextCustomerId(0), nextDishId(0), open(true) {}
+
 
 //todo:refactor split code
 Restaurant::Restaurant(const std::string &configFilePath) {
@@ -81,6 +82,7 @@ Restaurant::Restaurant(const std::string &configFilePath) {
     } else {
 
     }
+    open = true;
 }
 
 DishType Restaurant::getType(std::string &type_s) {
@@ -111,9 +113,9 @@ std::vector<std::string> Restaurant::getLines(
 }
 
 void Restaurant::start() {
-    open = true;
     std::cout << "Restaurant is now open!" << std::endl;
-    while (running) {
+    while (open) {
+        bool doAct = true;
         std::string cmd;
         std::getline(std::cin, cmd);
         std::cout << cmd << std::endl;
@@ -130,7 +132,7 @@ void Restaurant::start() {
             action = new OpenTable(tableId, customers);
         } else if (startsWith(cmd, "order")) { //order from table-id
             std::cout << "received order" << std::endl;
-            Order order = Order(tableId, cmd);
+            action = new Order(tableId, cmd);
         } else if (startsWith(cmd, "move")) { // move customer
             std::cout << "received move" << std::endl;
             //action = new MoveCustomer(/*todo:split command to params*/)
@@ -148,12 +150,14 @@ void Restaurant::start() {
         } else if (cmd == "restore") { //restore restaurant
             action = new RestoreResturant(cmd);
         } else {
-            // TODO: error
-            open = false;
             std::cout << "no such" << std::endl;
+            doAct = false;
         }
         // BaseAction destructor and its derivatives should clean memory mass here
-        if (!open) { action->act(*this); };
+        if (doAct) {
+            action->act(*this);
+            delete action;
+        }
     }
 }
 
@@ -260,5 +264,9 @@ void Restaurant::print(std::string s, int i) {
 void Restaurant::print(std::string s) {
     std::cout << s << std::endl;
 
+}
+
+void Restaurant::closeRestuarant() {
+    open = false;
 }
 

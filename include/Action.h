@@ -16,7 +16,9 @@ class BaseAction {
 public:
     BaseAction();
 
-    BaseAction(std::string _cmd);
+    explicit BaseAction(std::string _cmd);
+
+    virtual ~BaseAction();
 
     ActionStatus getStatus() const;
 
@@ -44,8 +46,6 @@ class OpenTable : public BaseAction {
 public:
     OpenTable(int id, std::vector<Customer *> &customersList);
 
-    virtual ~OpenTable();
-
     void act(Restaurant &restaurant);
 
     std::string toString() const;
@@ -54,14 +54,6 @@ private:
     const int tableId;
     std::vector<Customer *> customers;
 };
-
-
-
-
-
-
-
-
 
 class Order : public BaseAction {
 public:

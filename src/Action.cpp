@@ -43,6 +43,10 @@ std::string BaseAction::baseToString() const {
     }
 }
 
+BaseAction::~BaseAction() {
+
+}
+
 Order::Order(int id, std::string cmd) :
         tableId(id) {}
 
@@ -100,12 +104,6 @@ std::string OpenTable::toString() const {
     return s;
 }
 
-
-OpenTable::~OpenTable() {
-    for (auto customer : customers) {
-        delete customer;
-    }
-}
 
 /**
  * opens a table by id and add customers to it
@@ -219,6 +217,7 @@ std::string CloseAll::toString() const {
 
 void CloseAll::act(Restaurant &restaurant) {
 
+    restaurant.closeRestuarant();
 }
 
 CloseAll::CloseAll(std::string cmd) : BaseAction(cmd) {

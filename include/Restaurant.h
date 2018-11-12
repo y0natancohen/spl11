@@ -26,9 +26,8 @@ public:
     bool startsWith(std::string a_string, std::string prefix);
     void print(std::string s, int i);
     void print(std::string s);
-
+    void closeRestuarant();
 private:
-    bool running;
     int nextDishId = 0;
     int nextCustomerId = 0;
     bool open;

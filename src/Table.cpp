@@ -86,7 +86,7 @@ void Table::openTable() {
 }
 
 void Table::closeTable() {
-    // TODO: this
+    open = false;
 }
 
 int Table::getBill() {
