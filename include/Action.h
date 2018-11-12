@@ -16,7 +16,7 @@ class BaseAction {
 public:
     BaseAction();
 
-    explicit BaseAction(std::string _cmd);
+    BaseAction(std::string _cmd);
 
     virtual ~BaseAction();
 

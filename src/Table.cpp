@@ -20,10 +20,9 @@ void Table::addCustomer(Customer *customer) {
 }
 
 void Table::removeCustomer(int id) {
+    // this does not delete
     for (int i = 0; i < customersList.size(); ++i) {
         if (customersList[i]->getId() == id){
-            delete customersList[i];
-            // TODO: implement delete customer
             customersList.erase(customersList.begin() + i);
         }
     }
@@ -35,7 +34,6 @@ Customer* Table::getCustomer(int id) {
             return customersList[i];
         }
     }
-    std::cout << "somthing bad happend 123" << std::endl;
     return nullptr;
 }
 
@@ -115,4 +113,28 @@ void Table::doClose() {
 
 void Table::clearCustomers() {
     customersList.clear();
+}
+
+std::vector<OrderPair> Table::getCustomerOrders(int id) {
+    std::vector<OrderPair> result;
+    for (auto order: orderList){
+        if (order.first == id){
+            result.push_back(order);
+        }
+    }
+    return result;
+}
+
+void Table::addOrders(std::vector<OrderPair> orders) {
+    for (auto order: orders){
+        orderList.push_back(order);
+    }
+}
+
+void Table::removeCustomerOrders(int id) {
+    for (int i = 0; i < orderList.size(); ++i) {
+        if (orderList[i].first == id){
+            orderList.erase(orderList.begin() + i);
+        }
+    }
 }

@@ -9,12 +9,11 @@
 #include "../include/Dish.h"
 
 BaseAction::BaseAction() {
+    std::cout << "i was in Base Action constructor" << std::endl;
     status = PENDING;
 }
 
-BaseAction::BaseAction(std::string _cmd) {
-
-}
+BaseAction::BaseAction(std::string _cmd): cmd(_cmd){}
 
 ActionStatus BaseAction::getStatus() const {
     return status;
@@ -94,9 +93,13 @@ std::string Close::toString() const {
 }
 
 //open table
-OpenTable::OpenTable(int id, std::vector<Customer *> &customersList) : BaseAction(cmd), tableId(id),
-                                                                       customers(customersList) {
-
+//OpenTable::OpenTable(int id, std::vector<Customer *> &customersList):
+//            BaseAction(cmd), tableId(id), customers(customersList) {
+//
+//}
+OpenTable::OpenTable(int id, std::vector<Customer *> &customersList):
+            tableId(id), customers(customersList) {
+    std::cout << "i was in Open table constructor" << std::endl;
 }
 
 std::string OpenTable::toString() const {
@@ -123,6 +126,7 @@ void OpenTable::act(Restaurant &restaurant) {
         return;
     }
     for (auto customer : customers) {
+        // no need to verify capacity - forum
         table->addCustomer(customer);
     }
     table->openTable();
@@ -135,7 +139,12 @@ RestoreResturant::RestoreResturant() {
 
 }
 
-RestoreResturant::RestoreResturant(std::string cmd) : BaseAction(cmd) {
+//RestoreResturant::RestoreResturant(std::string cmd) : BaseAction(cmd) {
+//
+//}
+
+
+RestoreResturant::RestoreResturant(std::string cmd) : BaseAction() {
 
 }
 
@@ -233,6 +242,45 @@ std::string MoveCustomer::toString() const {
 }
 
 void MoveCustomer::act(Restaurant &restaurant) {
+    Table *source = restaurant.getTable(srcTable);
+    Table *dest = restaurant.getTable(dstTable);
+
+    if ((source == nullptr) or (dest == nullptr)){
+        error("Cannot move customer");
+        std::cout << "because null"<< std::endl;
+        return;
+    }
+
+    if ((not source->isOpen()) or (not dest->isOpen())){
+        error("Cannot move customer");
+        std::cout << "because not open"<< std::endl;
+        return;
+    }
+
+    if (dest->getCustomers().size() >= dest->getCapacity()){ // table is full
+        error("Cannot move customer");
+        std::cout << "because capacity "<< std::endl;
+        return;
+    }
+
+    Customer *mover = source->getCustomer(id);
+    if (mover == nullptr){
+        error("Cannot move customer");
+        std::cout << "because customer id is bad"<< std::endl;
+        return;
+    }
+
+    source->removeCustomer(id);
+    dest->addCustomer(mover);
+
+    std::vector<OrderPair> customerOrders = source->getCustomerOrders(id);
+    source->removeCustomerOrders(id);
+    dest->addOrders(customerOrders);
+
+    if (source->getCustomers().size() == 0){
+        source->closeTable();
+    }
+
 
 }
 
@@ -241,6 +289,5 @@ MoveCustomer::MoveCustomer(int src, int dst, int customerId, std::string cmd) : 
 
 }
 
-MoveCustomer::MoveCustomer(int src, int dst, int customerId) : srcTable(src), dstTable(dst), id(customerId) {
-
-}
+MoveCustomer::MoveCustomer(int src, int dst, int customerId):
+            srcTable(src), dstTable(dst), id(customerId) {}

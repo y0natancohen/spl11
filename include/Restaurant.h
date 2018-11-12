@@ -27,6 +27,14 @@ public:
     void print(std::string s, int i);
     void print(std::string s);
     void closeRestuarant();
+    bool verifiedOpen(const std::vector<std::string> words);
+    bool verifiedCmdTableNum(std::vector<std::string> words);
+    bool VerifiedMove(std::vector<std::string> words);
+    bool verifiedClose(std::vector<std::string> words);
+    bool verifiedStatus(std::vector<std::string> words);
+    bool isNumber(std::string s);
+    int getTableId(std::vector<std::string> words);
+
 private:
     int nextDishId = 0;
     int nextCustomerId = 0;

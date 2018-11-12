@@ -115,49 +115,63 @@ std::vector<std::string> Restaurant::getLines(
 void Restaurant::start() {
     std::cout << "Restaurant is now open!" << std::endl;
     while (open) {
-        bool doAct = true;
         std::string cmd;
         std::getline(std::cin, cmd);
         std::cout << cmd << std::endl;
         BaseAction *action;
         std::vector<std::string> words = split(cmd, ' ');
-        int tableId = std::stoi(words[1]);
-        if (cmd == "closeall") { //close all
+        if (words.size() < 1) {continue;}
+        int tableId = getTableId(words);
+
+        if (words[0] == "closeall") { //close all
             action = new CloseAll(cmd);
         }
-        if (startsWith(cmd, "open")) { //open table
+        else if (words[0] == "open") { //open table
             print("table id is", tableId);
+            if (not verifiedOpen(words)){ continue; }
             std::vector<Customer *> customers;
             initiateCustomersByType(words, customers);
             action = new OpenTable(tableId, customers);
-        } else if (startsWith(cmd, "order")) { //order from table-id
+
+        } else if (words[0] == "order") { //order from table-id
             std::cout << "received order" << std::endl;
+            if (not verifiedCmdTableNum(words)) { continue; }
             action = new Order(tableId, cmd);
-        } else if (startsWith(cmd, "move")) { // move customer
+
+        } else if (words[0] == "move") { // move customer
             std::cout << "received move" << std::endl;
-            //action = new MoveCustomer(/*todo:split command to params*/)
+            if (not VerifiedMove(words)) { continue; }
+            int source = std::stoi(words[1]);
+            int destination = std::stoi(words[2]);
+            int customerId = std::stoi(words[3]);
+            action = new MoveCustomer(source, destination, customerId);
+
         } else if (startsWith(cmd, "close ")) { // no collision with closeall because it was before
             std::cout << "received close " << std::endl;
             action = new Close(tableId, cmd);
+
         } else if (cmd == "menu") { //print menut
             action = new PrintMenu(cmd);
+
         } else if (cmd == "status") { //print table status
             action = new PrintTableStatus(tableId, cmd);
+
         } else if (cmd == "log") { //print actions log
             action = new PrintActionsLog(cmd);
+
         } else if (cmd == "backup") { //backup restaurant
             action = new BackupRestaurant(cmd);
+
         } else if (cmd == "restore") { //restore restaurant
             action = new RestoreResturant(cmd);
+
         } else {
-            std::cout << "no such" << std::endl;
-            doAct = false;
+            continue;
         }
         // BaseAction destructor and its derivatives should clean memory mass here
-        if (doAct) {
-            action->act(*this);
-            delete action;
-        }
+        action->act(*this);
+        delete action;
+
     }
 }
 
@@ -268,5 +282,47 @@ void Restaurant::print(std::string s) {
 
 void Restaurant::closeRestuarant() {
     open = false;
+}
+
+bool Restaurant::VerifiedMove(std::vector<std::string> words) {
+    if (not words.size() == 4){
+        return false;
+    }
+    for (int i = 1; i < words.size(); ++i) {
+        if (not isNumber(words[i])){
+            return false;
+        }
+    }
+    return true;
+}
+
+
+
+
+bool Restaurant::isNumber(std::string s) {
+    for (int i = 0; i < s.length(); i++)
+        if (not std::isdigit(s[i])){
+            return false;
+        }
+    return true;
+}
+
+int Restaurant::getTableId(std::vector<std::string> words) {
+    int tableId = 2147483646;  // int max
+    if (words.size() > 1){
+        tableId = std::stoi(words[1]);
+    }
+    return tableId;
+}
+
+bool Restaurant::verifiedOpen(const std::vector<std::string> words) {
+    return true;
+}
+
+bool Restaurant::verifiedCmdTableNum(std::vector<std::string> words) {
+    if (not words.size() == 2){
+        return false;
+    };
+    return isNumber(words[1]);
 }
 
