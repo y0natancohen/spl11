@@ -160,23 +160,23 @@ void Restaurant::start() {
 void Restaurant::initiateCustomersByType(const std::vector<std::string> &words, std::vector<Customer *> &customers) {
     for (int i = 0; i < words.size(); ++i) {
         if (i >= 2) { // customer section
-            std::__1::string customer = words[i];
-            std::__1::vector<std::__1::string> pair = split(customer, ',');
-            std::__1::string c_name = pair[0];
-            std::__1::string c_type = pair[1];
+            std::string customer = words[i];
+            std::vector<std::string> pair = split(customer, ',');
+            std::string c_name = pair[0];
+            std::string c_type = pair[1];
             int c_id = generateCustomerId();
             if (c_type == "veg") {
                 customers.push_back(new VegetarianCustomer(c_name, c_id));
-                std::__1::cout << "making a veg" << std::__1::endl;
+                std::cout << "making a veg" << std::endl;
             } else if (c_type == "chp") {
                 customers.push_back(new CheapCustomer(c_name, c_id));
-                std::__1::cout << "making a cheap" << std::__1::endl;
+                std::cout << "making a cheap" << std::endl;
             } else if (c_type == "spc") {
                 customers.push_back(new SpicyCustomer(c_name, c_id));
-                std::__1::cout << "making a spicy" << std::__1::endl;
+                std::cout << "making a spicy" << std::endl;
             } else if (c_type == "alc") {
                 customers.push_back(new AlchoholicCustomer(c_name, c_id));
-                std::__1::cout << "making a alcoholic" << std::__1::endl;
+                std::cout << "making a alcoholic" << std::endl;
             } else {
                 print("unknown customer type - " + c_type); // TODO: what here?
             }
