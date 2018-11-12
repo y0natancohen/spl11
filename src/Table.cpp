@@ -17,7 +17,6 @@ int Table::getCapacity() const {
 void Table::addCustomer(Customer *customer) {
     // TODO: more things here?
     customersList.push_back(customer);
-
 }
 
 void Table::removeCustomer(int id) {
@@ -83,8 +82,7 @@ Dish Table::getDish(const std::vector<Dish> &menu, int d_id) {
 }
 
 void Table::openTable() {
-    // TODO: this
-
+    open = true;
 }
 
 void Table::closeTable() {
@@ -110,9 +108,6 @@ Table::~Table() {
     customersList.clear();
 }
 
-void Table::doOpen() {
-    open = true;
-}
 
 void Table::doClose() {
     open = false;

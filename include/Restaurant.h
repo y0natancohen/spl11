@@ -24,7 +24,6 @@ public:
     int generateCustomerId();
     DishType getType(std::string &type_s);
     bool startsWith(std::string a_string, std::string prefix);
-    void stop();
     void print(std::string s, int i);
     void print(std::string s);
 
@@ -36,7 +35,7 @@ private:
     std::vector<Table*> tables;
     std::vector<Dish> menu;
     std::vector<BaseAction*> actionsLog;
-
+    void initiateCustomersByType(const std::vector<std::string> &words, std::vector<Customer *> &customers);
 };
 
 #endif

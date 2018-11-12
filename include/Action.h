@@ -5,52 +5,67 @@
 #include <iostream>
 #include "Customer.h"
 
-enum ActionStatus{
+enum ActionStatus {
     PENDING, COMPLETED, ERROR
 };
 
 //Forward declaration
 class Restaurant;
 
-class BaseAction{
+class BaseAction {
 public:
-//    BaseAction();
+    BaseAction();
+
     BaseAction(std::string _cmd);
+
     ActionStatus getStatus() const;
-    virtual void act(Restaurant& restaurant)=0;
-    virtual std::string toString() const=0;
+
+    virtual void act(Restaurant &restaurant) = 0;
+
+    virtual std::string toString() const = 0;
+
     virtual std::string baseToString() const;
+
 protected:
     std::string cmd;
+
     void complete();
+
     void error(std::string errorMsg);
+
     std::string getErrorMsg() const;
+
 private:
     std::string errorMsg;
     ActionStatus status = PENDING;
 };
 
-
 class OpenTable : public BaseAction {
 public:
-//    OpenTable(int id, std::vector<Customer *> &customersList);
-    OpenTable(int id, std::vector<Customer *> &customersList, std::string cmd);
+    OpenTable(int id, std::vector<Customer *> &customersList);
+
     virtual ~OpenTable();
+
     void act(Restaurant &restaurant);
+
     std::string toString() const;
-//    void clearCustomers();
+
 private:
-	const int tableId;
-	const std::vector<Customer *> customers;
+    const int tableId;
+    std::vector<Customer *> customers;
 };
 
 
 class Order : public BaseAction {
 public:
-//    Order(int id);
+    Order(int id);
+
     Order(int id, std::string cmd);
+
     void act(Restaurant &restaurant);
+
     std::string toString() const;
+
 private:
     const int tableId;
 };
@@ -58,10 +73,14 @@ private:
 
 class MoveCustomer : public BaseAction {
 public:
-//    MoveCustomer(int src, int dst, int customerId);
+    MoveCustomer(int src, int dst, int customerId);
+
     MoveCustomer(int src, int dst, int customerId, std::string cmd);
+
     void act(Restaurant &restaurant);
+
     std::string toString() const;
+
 private:
     const int srcTable;
     const int dstTable;
@@ -71,10 +90,14 @@ private:
 
 class Close : public BaseAction {
 public:
-//    Close(int id);
+    Close(int id);
+
     Close(int id, std::string cmd);
+
     void act(Restaurant &restaurant);
+
     std::string toString() const;
+
 private:
     const int tableId;
 };
@@ -82,30 +105,42 @@ private:
 
 class CloseAll : public BaseAction {
 public:
-//    CloseAll();
+    CloseAll();
+
     CloseAll(std::string cmd);
+
     void act(Restaurant &restaurant);
+
     std::string toString() const;
+
 private:
 };
 
 
 class PrintMenu : public BaseAction {
 public:
-//    PrintMenu();
+    PrintMenu();
+
     PrintMenu(std::string cmd);
+
     void act(Restaurant &restaurant);
+
     std::string toString() const;
+
 private:
 };
 
 
 class PrintTableStatus : public BaseAction {
 public:
-//    PrintTableStatus(int id);
+    PrintTableStatus(int id);
+
     PrintTableStatus(int id, std::string cmd);
+
     void act(Restaurant &restaurant);
+
     std::string toString() const;
+
 private:
     const int tableId;
 };
@@ -115,27 +150,37 @@ class PrintActionsLog : public BaseAction {
 public:
 //    PrintActionsLog();
     PrintActionsLog(std::string cmd);
+
     void act(Restaurant &restaurant);
+
     std::string toString() const;
+
 private:
 };
 
 
 class BackupRestaurant : public BaseAction {
 public:
-//    BackupRestaurant();
+    BackupRestaurant();
+
     BackupRestaurant(std::string cmd);
+
     void act(Restaurant &restaurant);
+
     std::string toString() const;
+
 private:
 };
 
 
 class RestoreResturant : public BaseAction {
 public:
-//    RestoreResturant();
+    RestoreResturant();
+
     RestoreResturant(std::string cmd);
+
     void act(Restaurant &restaurant);
+
     std::string toString() const;
 
 };

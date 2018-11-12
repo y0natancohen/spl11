@@ -17,14 +17,6 @@ public:
     void sortByPrice(std::vector<SortableDish> &vec);
 	void print(std::string s, int i);
 	void print(std::string s);
-//	static bool compareId(const Dish* l, const Dish* r);
-
-//    inline int getCorrectId(
-//            const std::vector<Dish> &menu,
-//            DishType type,
-//            int location,
-//            bool sortById,
-//            bool noType);
 
 private:
     const std::string name;

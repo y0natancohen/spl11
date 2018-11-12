@@ -11,7 +11,7 @@ enum DishType{
 class Dish{
 public:
     Dish(int d_id, std::string d_name, int d_price, DishType d_type);
-//    Dish(Dish &other);
+    Dish(Dish &other);
     Dish& operator=(Dish&& other);
     Dish(const Dish& other);
     int getId() const;
