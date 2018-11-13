@@ -9,8 +9,11 @@
 class Customer{
 public:
     Customer(std::string c_name, int c_id);
+    Customer(Customer &other);
     virtual std::vector<int> order(const std::vector<Dish> &menu)=0;
     virtual std::string toString() const = 0;
+
+    virtual Customer* generate(std::string name, int id) = 0;
     std::string getName() const;
     int getId() const;
     void sortById(std::vector<SortableDish> &vec);
@@ -29,6 +32,7 @@ public:
 	VegetarianCustomer(std::string name, int id);
     virtual std::vector<int> order(const std::vector<Dish> &menu);
     std::string toString() const;
+    Customer* generate(std::string name, int id);
 private:
 };
 
@@ -38,6 +42,8 @@ public:
 	CheapCustomer(std::string name, int id);
     std::vector<int> order(const std::vector<Dish> &menu);
     std::string toString() const;
+    Customer* generate(std::string name, int id);
+
 private:
 };
 
@@ -45,8 +51,10 @@ private:
 class SpicyCustomer : public Customer {
 public:
 	SpicyCustomer(std::string name, int id);
+	SpicyCustomer(const SpicyCustomer &other);
     virtual std::vector<int> order(const std::vector<Dish> &menu);
     std::string toString() const;
+    Customer* generate(std::string name, int id);
     bool hasOrdered();
     void setOrdered(bool newState);
 private:
@@ -57,8 +65,10 @@ private:
 class AlchoholicCustomer : public Customer {
 public:
 	AlchoholicCustomer(std::string name, int id);
+	AlchoholicCustomer(const AlchoholicCustomer &other);
     std::vector<int> order(const std::vector<Dish> &menu);
     std::string toString() const;
+    Customer* generate(std::string name, int id);
     int getDrinksHad();
     void increaseDrinksHad();
 private:

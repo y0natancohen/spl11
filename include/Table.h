@@ -10,7 +10,17 @@ typedef std::pair<int, Dish> OrderPair;
 class Table{
 public:
     Table(int t_capacity);
+    Table(const Table &other); //copy con
+    Table& operator=(const Table &other); //copy ass op
+    Table(Table &&other); // move con
+    Table& operator=(Table &&other); // move ass op
+    void cleanMySelf();
+    void cleanOther(Table &other);
+    void copyFromOtherIntoMe(const Table &other);
+    void StealFromOtherToMe(const Table &other);
     virtual ~Table();
+
+
     int getCapacity() const;
     void addCustomer(Customer* customer);
     void removeCustomer(int id);
@@ -25,8 +35,6 @@ public:
     void closeTable();
     int getBill();
     bool isOpen();
-    void doOpen();
-    void doClose();
     Dish getDish(const std::vector<Dish> &menu, int d_id);
     void clearCustomers();
 

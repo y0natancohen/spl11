@@ -12,7 +12,16 @@ class Restaurant{
 public:
     Restaurant();
     Restaurant(const std::string &configFilePath);
+    Restaurant(const Restaurant &other); // copy con
+    Restaurant& operator=(const Restaurant &other); // copy ass op
+    Restaurant(Restaurant &&other); // move con
+    Restaurant& operator=(Restaurant &&other); // move ass op
     virtual ~Restaurant();
+    void cleanOther(Restaurant &other);
+    void StealFromOtherToMe(const Restaurant &other);
+    void copyFromOtherIntoMe(const Restaurant &other);
+    void cleanMySelf();
+
     void start();
     int getNumOfTables() const;
     Table* getTable(int ind);
@@ -34,6 +43,7 @@ public:
     bool verifiedStatus(std::vector<std::string> words);
     bool isNumber(std::string s);
     int getTableId(std::vector<std::string> words);
+    void initiateCustomersByType(const std::vector<std::string> &words, std::vector<Customer *> &customers);
 
 private:
     int nextDishId = 0;
@@ -42,7 +52,6 @@ private:
     std::vector<Table*> tables;
     std::vector<Dish> menu;
     std::vector<BaseAction*> actionsLog;
-    void initiateCustomersByType(const std::vector<std::string> &words, std::vector<Customer *> &customers);
 };
 
 #endif

@@ -103,8 +103,7 @@ DishType Restaurant::getType(std::string &type_s) {
     return d_type;
 }
 
-std::vector<std::string> Restaurant::getLines(
-        const std::string &configFilePath) {
+std::vector<std::string> Restaurant::getLines(const std::string &configFilePath) {
     std::ifstream t(configFilePath);
     std::stringstream buffer;
     buffer << t.rdbuf();
@@ -124,7 +123,8 @@ void Restaurant::start() {
         int tableId = getTableId(words);
 
         if (words[0] == "closeall") { //close all
-            action = new CloseAll(cmd);
+            //todo: for table in tables close table
+            action = new CloseAll();
         }
         else if (words[0] == "open") { //open table
             print("table id is", tableId);
@@ -136,7 +136,7 @@ void Restaurant::start() {
         } else if (words[0] == "order") { //order from table-id
             std::cout << "received order" << std::endl;
             if (not verifiedCmdTableNum(words)) { continue; }
-            action = new Order(tableId, cmd);
+            action = new Order(tableId);
 
         } else if (words[0] == "move") { // move customer
             std::cout << "received move" << std::endl;
@@ -146,24 +146,25 @@ void Restaurant::start() {
             int customerId = std::stoi(words[3]);
             action = new MoveCustomer(source, destination, customerId);
 
-        } else if (startsWith(cmd, "close ")) { // no collision with closeall because it was before
+        } else if (words[0] == "close") {
+            if (not verifiedCmdTableNum(words)) { continue; }
             std::cout << "received close " << std::endl;
-            action = new Close(tableId, cmd);
+            action = new Close(tableId);
 
         } else if (cmd == "menu") { //print menut
-            action = new PrintMenu(cmd);
+            action = new PrintMenu();
 
         } else if (cmd == "status") { //print table status
-            action = new PrintTableStatus(tableId, cmd);
+            action = new PrintTableStatus(tableId);
 
         } else if (cmd == "log") { //print actions log
-            action = new PrintActionsLog(cmd);
+            action = new PrintActionsLog();
 
         } else if (cmd == "backup") { //backup restaurant
-            action = new BackupRestaurant(cmd);
+            action = new BackupRestaurant();
 
         } else if (cmd == "restore") { //restore restaurant
-            action = new RestoreResturant(cmd);
+            action = new RestoreResturant();
 
         } else {
             continue;
@@ -326,3 +327,88 @@ bool Restaurant::verifiedCmdTableNum(std::vector<std::string> words) {
     return isNumber(words[1]);
 }
 
+Restaurant::Restaurant(const Restaurant &other) {
+    // im empty.
+    // copy everything from other and put it in me
+    // other keeps living
+    copyFromOtherIntoMe(other);
+}
+
+Restaurant &Restaurant::operator=(const Restaurant &other) {
+    // im existing.
+    // replace everything in myself with copies from other
+    // other keeps living
+    if (&other != this) {
+        cleanMySelf();
+        copyFromOtherIntoMe(other);
+    }
+    return *this;
+}
+
+Restaurant::Restaurant(Restaurant &&other) {
+    // im empty.
+    // other will disappear and im stealing everything
+    StealFromOtherToMe(other);
+    cleanOther(other);
+}
+
+Restaurant &Restaurant::operator=(Restaurant &&other) {
+    // im existing.
+    // other will disappear and im stealing everything
+    if (&other != this) {
+        cleanMySelf();
+        StealFromOtherToMe(other);
+        cleanOther(other);
+    }
+
+    return *this;
+}
+
+
+void Restaurant::cleanMySelf() {
+    for (int i = 0; i < tables.size(); ++i) {
+        delete tables[i];
+    }
+    tables.clear();
+    for (int i = 0; i < actionsLog.size(); ++i) {
+        delete actionsLog[i];
+    }
+    tables.clear();
+    actionsLog.clear();
+}
+
+void Restaurant::copyFromOtherIntoMe(const Restaurant &other)  {
+    nextDishId = other.nextDishId;
+    nextCustomerId = other.nextCustomerId;
+    open = other.open;
+
+    // we are generating new tables!
+    for (auto table: other.tables) {
+        tables.push_back(new Table(*table));
+    }
+    // we are generating new actions!
+    for (auto action: other.actionsLog){
+        actionsLog.push_back(action->generate(*action));
+    }
+}
+
+void Restaurant::StealFromOtherToMe(const Restaurant &other)  {
+    nextDishId = other.nextDishId;
+    nextCustomerId = other.nextCustomerId;
+    open = other.open;
+    for (auto table : other.tables){
+        tables.push_back(table);
+    }
+
+    for (auto action: other.actionsLog){
+        actionsLog.push_back(action);
+    }
+}
+
+void Restaurant::cleanOther(Restaurant &other) {
+    for (int i = 0; i < other.tables.size(); ++i) {
+        other.tables[i] = nullptr;
+        // no deleting here
+    }
+//    other.customersList.clear();
+}

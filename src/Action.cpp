@@ -9,11 +9,11 @@
 #include "../include/Dish.h"
 
 BaseAction::BaseAction() {
-    std::cout << "i was in Base Action constructor" << std::endl;
+//    std::cout << "i was in Base Action constructor" << std::endl;
     status = PENDING;
 }
 
-BaseAction::BaseAction(std::string _cmd): cmd(_cmd){}
+//BaseAction::BaseAction(std::string _cmd): cmd(_cmd){}
 
 ActionStatus BaseAction::getStatus() const {
     return status;
@@ -46,8 +46,16 @@ BaseAction::~BaseAction() {
 
 }
 
-Order::Order(int id, std::string cmd) :
-        tableId(id) {}
+BaseAction *BaseAction::generate(BaseAction &other) {
+    return nullptr;
+}
+
+Order::Order(int id) : tableId(id) {
+
+}
+
+//Order::Order(int id, std::string cmd) :
+//        tableId(id) {}
 
 void Order::act(Restaurant &restaurant) {
     std::cout << "acting order" << std::endl;
@@ -75,15 +83,43 @@ std::string Order::toString() const {
     return s;
 }
 
-Order::Order(int id) : tableId(id) {
-
+BaseAction* Order::generate(Order &other) {
+    return new Order(other.tableId);
 }
 
+//Order::Order(int id, std::string cmd) {
+//
+//}
+
 // close table
-Close::Close(int id, std::string cmd) :
-        tableId(id) {}
+
+Close::Close(int id): tableId(id) {
+
+}
+//Close::Close(int id, std::string cmd) :
+//        tableId(id) {}
 
 void Close::act(Restaurant &restaurant) {
+    std::cout << "acting close" << std::endl;
+    Table *table = restaurant.getTable(tableId);
+
+    if (table == nullptr) {
+        std::cout << 5 << std::endl;
+        error("Table does not exist or is not open");
+        return;
+    }
+    if (not table->isOpen()) {
+        std::cout << 6 << std::endl;
+        error("Table does not exist or is not open");
+        return;
+    }
+
+    int bill = table->getBill();
+    std::string msg = "Table "  + std::to_string(tableId) +
+            " was closed. Bill " + std::to_string(bill) + "NIS";
+    std::cout << msg << std::endl;
+    table->closeTable();
+    complete();
 
 }
 
@@ -91,6 +127,11 @@ std::string Close::toString() const {
     std::string s = "a very nice close table";
     return s;
 }
+
+BaseAction* Close::generate(Close &other) {
+    return new Close(other.tableId);
+}
+
 
 //open table
 //OpenTable::OpenTable(int id, std::vector<Customer *> &customersList):
@@ -134,6 +175,10 @@ void OpenTable::act(Restaurant &restaurant) {
 
 }
 
+BaseAction *OpenTable::generate(OpenTable &other) {
+    return new OpenTable(other.tableId, customers);
+}
+
 //restore
 RestoreResturant::RestoreResturant() {
 
@@ -144,9 +189,9 @@ RestoreResturant::RestoreResturant() {
 //}
 
 
-RestoreResturant::RestoreResturant(std::string cmd) : BaseAction() {
-
-}
+//RestoreResturant::RestoreResturant(std::string cmd) : BaseAction() {
+//
+//}
 
 void RestoreResturant::act(Restaurant &restaurant) {
 
@@ -154,6 +199,10 @@ void RestoreResturant::act(Restaurant &restaurant) {
 
 std::string RestoreResturant::toString() const {
     return std::string();
+}
+
+BaseAction *RestoreResturant::generate(RestoreResturant &other) {
+    return new RestoreResturant();
 }
 
 //backup
@@ -165,12 +214,16 @@ void BackupRestaurant::act(Restaurant &restaurant) {
 
 }
 
-BackupRestaurant::BackupRestaurant(std::string cmd) : BaseAction(cmd) {
-
-}
+//BackupRestaurant::BackupRestaurant(std::string cmd) : BaseAction(cmd) {
+//
+//}
 
 BackupRestaurant::BackupRestaurant() {
 
+}
+
+BaseAction *BackupRestaurant::generate(BackupRestaurant &other) {
+    return new BackupRestaurant();
 }
 
 //actions log
@@ -182,9 +235,15 @@ void PrintActionsLog::act(Restaurant &restaurant) {
 
 }
 
-PrintActionsLog::PrintActionsLog(std::string cmd) : BaseAction(cmd) {
+//PrintActionsLog::PrintActionsLog(std::string cmd) : BaseAction(cmd) {
+//
+//}
 
+BaseAction *PrintActionsLog::generate(PrintActionsLog &other) {
+    return new PrintActionsLog();
 }
+
+PrintActionsLog::PrintActionsLog() {}
 
 //status
 std::string PrintTableStatus::toString() const {
@@ -195,12 +254,16 @@ void PrintTableStatus::act(Restaurant &restaurant) {
 
 }
 
-PrintTableStatus::PrintTableStatus(int id, std::string cmd) : tableId(id) {
-
-}
+//PrintTableStatus::PrintTableStatus(int id, std::string cmd) : tableId(id) {
+//
+//}
 
 PrintTableStatus::PrintTableStatus(int id) : tableId(id) {
 
+}
+
+BaseAction *PrintTableStatus::generate(PrintTableStatus &other) {
+    return new PrintTableStatus(other.tableId);
 }
 
 //print menu
@@ -212,12 +275,16 @@ void PrintMenu::act(Restaurant &restaurant) {
 
 }
 
-PrintMenu::PrintMenu(std::string cmd) : BaseAction(cmd) {
-
-}
+//PrintMenu::PrintMenu(std::string cmd) : BaseAction(cmd) {
+//
+//}
 
 PrintMenu::PrintMenu() {
 
+}
+
+BaseAction *PrintMenu::generate(PrintMenu &other) {
+    return new PrintMenu();
 }
 
 std::string CloseAll::toString() const {
@@ -229,12 +296,16 @@ void CloseAll::act(Restaurant &restaurant) {
     restaurant.closeRestuarant();
 }
 
-CloseAll::CloseAll(std::string cmd) : BaseAction(cmd) {
-
-}
+//CloseAll::CloseAll(std::string cmd) : BaseAction(cmd) {
+//
+//}
 
 CloseAll::CloseAll() {
 
+}
+
+BaseAction *CloseAll::generate(CloseAll &other) {
+    return new CloseAll();
 }
 
 std::string MoveCustomer::toString() const {
@@ -277,17 +348,23 @@ void MoveCustomer::act(Restaurant &restaurant) {
     source->removeCustomerOrders(id);
     dest->addOrders(customerOrders);
 
-    if (source->getCustomers().size() == 0){
-        source->closeTable();
+    if (source->getCustomers().size() == 0){ // table is empty
+        Close closeActionInstance = Close(srcTable);
+        closeActionInstance.act(restaurant);
+
     }
-
-
-}
-
-MoveCustomer::MoveCustomer(int src, int dst, int customerId, std::string cmd) : srcTable(src), dstTable(dst),
-                                                                                id(customerId) {
+    complete();
 
 }
+
+//MoveCustomer::MoveCustomer(int src, int dst, int customerId, std::string cmd) : srcTable(src), dstTable(dst),
+//                                                                                id(customerId) {
+//
+//}
 
 MoveCustomer::MoveCustomer(int src, int dst, int customerId):
             srcTable(src), dstTable(dst), id(customerId) {}
+
+BaseAction *MoveCustomer::generate(MoveCustomer &other) {
+    return new MoveCustomer(other.srcTable, other.dstTable, other.id);
+}

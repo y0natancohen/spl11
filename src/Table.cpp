@@ -89,8 +89,8 @@ void Table::closeTable() {
 
 int Table::getBill() {
     int sum = 0;
-    for (int i = 0; i < orderList.size(); ++i) {
-        sum = sum + orderList[i].second.getPrice();
+    for (auto order : orderList) {
+        sum = sum + order.second.getPrice();
     }
     return sum;
 }
@@ -100,16 +100,9 @@ bool Table::isOpen() {
 }
 
 Table::~Table() {
-    for (auto customer: customersList){
-        delete customer;
-    }
-    customersList.clear();
+    cleanMySelf();
 }
 
-
-void Table::doClose() {
-    open = false;
-}
 
 void Table::clearCustomers() {
     customersList.clear();
@@ -137,4 +130,84 @@ void Table::removeCustomerOrders(int id) {
             orderList.erase(orderList.begin() + i);
         }
     }
+}
+
+Table::Table(const Table &other) {
+    // im empty.
+    // copy everything from other and put it in me
+    // other keeps living
+    copyFromOtherIntoMe(other);
+}
+
+Table &Table::operator=(const Table &other) {
+    // im existing.
+    // replace everything in myself with copies from other
+    // other keeps living
+    if (&other != this) {
+        cleanMySelf();
+        copyFromOtherIntoMe(other);
+    }
+    return *this;
+}
+
+
+Table::Table(Table &&other) {
+    // im empty.
+    // other will disappear and im stealing everything
+    StealFromOtherToMe(other);
+    cleanOther(other);
+}
+
+Table &Table::operator=(Table &&other) {
+    // im existing.
+    // other will disappear and im stealing everything
+    if (&other != this) {
+        cleanMySelf();
+        StealFromOtherToMe(other);
+        cleanOther(other);
+    }
+
+    return *this;
+}
+
+void Table::cleanMySelf() {
+    for (int i = 0; i < customersList.size(); ++i) {
+        delete customersList[i];
+    }
+    customersList.clear();
+    orderList.clear();
+}
+
+void Table::copyFromOtherIntoMe(const Table &other)  {
+    capacity = other.capacity;
+    open = other.open;
+
+    // we are generating new orders!
+    for (auto customer: other.customersList) {
+        customersList.push_back(customer->generate(customer->getName(),
+                                                   customer->getId()));
+    }
+    for (auto order: other.orderList){
+        orderList.push_back(OrderPair(order));
+    }
+}
+
+void Table::StealFromOtherToMe(const Table &other)  {
+    capacity = other.capacity;
+    open = other.open;
+    for (auto customer : other.customersList){
+        customersList.push_back(customer);
+    }
+
+    for (auto order: other.orderList){
+        orderList.push_back(order);
+    }
+}
+
+void Table::cleanOther(Table &other) {
+    for (int i = 0; i < other.customersList.size(); ++i) {
+        other.customersList[i] = nullptr;
+        // no deleting here
+    }
+//    other.customersList.clear();
 }
