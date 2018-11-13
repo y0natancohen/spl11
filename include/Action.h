@@ -27,7 +27,7 @@ public:
     virtual std::string toString() const = 0;
 
     virtual std::string baseToString() const;
-    virtual BaseAction* generate(BaseAction &other);
+    virtual BaseAction* generate(BaseAction &other); // supposed to be =0 but comile error
 
 
 protected:
