@@ -119,7 +119,7 @@ void Restaurant::start() {
         std::cout << cmd << std::endl;
         BaseAction *action;
         std::vector<std::string> words = split(cmd, ' ');
-        if (words.size() < 1) {continue;}
+        if (words.empty()) {continue;}
         int tableId = getTableId(words);
 
         if (words[0] == "closeall") { //close all
@@ -321,7 +321,7 @@ bool Restaurant::verifiedOpen(const std::vector<std::string> words) {
 }
 
 bool Restaurant::verifiedCmdTableNum(std::vector<std::string> words) {
-    if (not words.size() == 2){
+    if (words.size() != 2){
         return false;
     };
     return isNumber(words[1]);

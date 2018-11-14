@@ -9,11 +9,9 @@
 #include "../include/Dish.h"
 
 BaseAction::BaseAction() {
-//    std::cout << "i was in Base Action constructor" << std::endl;
     status = PENDING;
 }
 
-//BaseAction::BaseAction(std::string _cmd): cmd(_cmd){}
 
 ActionStatus BaseAction::getStatus() const {
     return status;
@@ -54,8 +52,6 @@ Order::Order(int id) : tableId(id) {
 
 }
 
-//Order::Order(int id, std::string cmd) :
-//        tableId(id) {}
 
 void Order::act(Restaurant &restaurant) {
     std::cout << "acting order" << std::endl;
@@ -87,17 +83,12 @@ BaseAction* Order::generate(Order &other) {
     return new Order(other.tableId);
 }
 
-//Order::Order(int id, std::string cmd) {
-//
-//}
 
 // close table
 
 Close::Close(int id): tableId(id) {
 
 }
-//Close::Close(int id, std::string cmd) :
-//        tableId(id) {}
 
 void Close::act(Restaurant &restaurant) {
     std::cout << "acting close" << std::endl;
@@ -134,10 +125,6 @@ BaseAction* Close::generate(Close &other) {
 
 
 //open table
-//OpenTable::OpenTable(int id, std::vector<Customer *> &customersList):
-//            BaseAction(cmd), tableId(id), customers(customersList) {
-//
-//}
 OpenTable::OpenTable(int id, std::vector<Customer *> &customersList):
             tableId(id), customers(customersList) {
     std::cout << "i was in Open table constructor" << std::endl;
@@ -184,14 +171,6 @@ RestoreResturant::RestoreResturant() {
 
 }
 
-//RestoreResturant::RestoreResturant(std::string cmd) : BaseAction(cmd) {
-//
-//}
-
-
-//RestoreResturant::RestoreResturant(std::string cmd) : BaseAction() {
-//
-//}
 
 void RestoreResturant::act(Restaurant &restaurant) {
 
@@ -214,9 +193,6 @@ void BackupRestaurant::act(Restaurant &restaurant) {
 
 }
 
-//BackupRestaurant::BackupRestaurant(std::string cmd) : BaseAction(cmd) {
-//
-//}
 
 BackupRestaurant::BackupRestaurant() {
 
@@ -235,9 +211,6 @@ void PrintActionsLog::act(Restaurant &restaurant) {
 
 }
 
-//PrintActionsLog::PrintActionsLog(std::string cmd) : BaseAction(cmd) {
-//
-//}
 
 BaseAction *PrintActionsLog::generate(PrintActionsLog &other) {
     return new PrintActionsLog();
@@ -253,10 +226,6 @@ std::string PrintTableStatus::toString() const {
 void PrintTableStatus::act(Restaurant &restaurant) {
 
 }
-
-//PrintTableStatus::PrintTableStatus(int id, std::string cmd) : tableId(id) {
-//
-//}
 
 PrintTableStatus::PrintTableStatus(int id) : tableId(id) {
 
@@ -275,9 +244,6 @@ void PrintMenu::act(Restaurant &restaurant) {
 
 }
 
-//PrintMenu::PrintMenu(std::string cmd) : BaseAction(cmd) {
-//
-//}
 
 PrintMenu::PrintMenu() {
 
@@ -296,9 +262,6 @@ void CloseAll::act(Restaurant &restaurant) {
     restaurant.closeRestuarant();
 }
 
-//CloseAll::CloseAll(std::string cmd) : BaseAction(cmd) {
-//
-//}
 
 CloseAll::CloseAll() {
 
@@ -316,13 +279,13 @@ void MoveCustomer::act(Restaurant &restaurant) {
     Table *source = restaurant.getTable(srcTable);
     Table *dest = restaurant.getTable(dstTable);
 
-    if ((source == nullptr) or (dest == nullptr)){
+    if ((source == nullptr) || (dest == nullptr)){
         error("Cannot move customer");
         std::cout << "because null"<< std::endl;
         return;
     }
 
-    if ((not source->isOpen()) or (not dest->isOpen())){
+    if ((! source->isOpen()) || (! dest->isOpen())){
         error("Cannot move customer");
         std::cout << "because not open"<< std::endl;
         return;
@@ -348,7 +311,7 @@ void MoveCustomer::act(Restaurant &restaurant) {
     source->removeCustomerOrders(id);
     dest->addOrders(customerOrders);
 
-    if (source->getCustomers().size() == 0){ // table is empty
+    if (source->getCustomers().empty()){ // table is empty
         Close closeActionInstance = Close(srcTable);
         closeActionInstance.act(restaurant);
 
@@ -356,11 +319,6 @@ void MoveCustomer::act(Restaurant &restaurant) {
     complete();
 
 }
-
-//MoveCustomer::MoveCustomer(int src, int dst, int customerId, std::string cmd) : srcTable(src), dstTable(dst),
-//                                                                                id(customerId) {
-//
-//}
 
 MoveCustomer::MoveCustomer(int src, int dst, int customerId):
             srcTable(src), dstTable(dst), id(customerId) {}

@@ -6,7 +6,7 @@
 #include <iostream>
 
 
-Table::Table(int t_capacity): capacity(t_capacity) {
+Table::Table(int t_capacity) : capacity(t_capacity) {
     open = false;
 }
 
@@ -22,15 +22,16 @@ void Table::addCustomer(Customer *customer) {
 void Table::removeCustomer(int id) {
     // this does not delete
     for (int i = 0; i < customersList.size(); ++i) {
-        if (customersList[i]->getId() == id){
+        if (customersList[i]->getId() == id) {
             customersList.erase(customersList.begin() + i);
+            break;
         }
     }
 }
 
-Customer* Table::getCustomer(int id) {
+Customer *Table::getCustomer(int id) {
     for (int i = 0; i < customersList.size(); ++i) {
-        if (customersList[i]->getId() == id){
+        if (customersList[i]->getId() == id) {
             return customersList[i];
         }
     }
@@ -46,34 +47,22 @@ std::vector<OrderPair> &Table::getOrders() {
 }
 
 void Table::order(const std::vector<Dish> &menu) {
-//    std::cout << "inside Table.order"<< std::endl;
-//    std::cout << customersList.size() << std::endl;
     for (auto customer: customersList) {
-//        std::cout << "working on customer"<< std::endl;
-//        std::cout <<  customer->getName()<< std::endl;
-//        std::cout << customer->getName() + " ordering"<< std::endl;
-//        bool cond = true;
-//        if (cond){
-//            std::cout << customer->getDrinksHad() << std::endl;
-//        }
-
         std::vector<int> dish_ids = customer->order(menu);
-
-//        std::cout << customer->getName() + " ordered"<< std::endl;
-        for (auto dish_id: dish_ids){
+        for (auto dish_id: dish_ids) {
             orderList.push_back(
                     OrderPair(customer->getId(), getDish(menu, dish_id))
-                    );
+            );
             std::string print_s = customer->getName() + " ordered " + getDish(menu, dish_id).getName();
-            std::cout <<  print_s << std::endl;
+            std::cout << print_s << std::endl;
         }
     }
 
 }
 
 Dish Table::getDish(const std::vector<Dish> &menu, int d_id) {
-    for (auto dish:menu){
-        if (dish.getId() == d_id){
+    for (const auto &dish:menu) {
+        if (dish.getId() == d_id) {
             return dish;
         }
     }
@@ -110,8 +99,8 @@ void Table::clearCustomers() {
 
 std::vector<OrderPair> Table::getCustomerOrders(int id) {
     std::vector<OrderPair> result;
-    for (auto order: orderList){
-        if (order.first == id){
+    for (auto order: orderList) {
+        if (order.first == id) {
             result.push_back(order);
         }
     }
@@ -119,14 +108,14 @@ std::vector<OrderPair> Table::getCustomerOrders(int id) {
 }
 
 void Table::addOrders(std::vector<OrderPair> orders) {
-    for (auto order: orders){
+    for (auto order: orders) {
         orderList.push_back(order);
     }
 }
 
 void Table::removeCustomerOrders(int id) {
     for (int i = 0; i < orderList.size(); ++i) {
-        if (orderList[i].first == id){
+        if (orderList[i].first == id) {
             orderList.erase(orderList.begin() + i);
         }
     }
@@ -178,7 +167,7 @@ void Table::cleanMySelf() {
     orderList.clear();
 }
 
-void Table::copyFromOtherIntoMe(const Table &other)  {
+void Table::copyFromOtherIntoMe(const Table &other) {
     capacity = other.capacity;
     open = other.open;
 
@@ -187,19 +176,19 @@ void Table::copyFromOtherIntoMe(const Table &other)  {
         customersList.push_back(customer->generate(customer->getName(),
                                                    customer->getId()));
     }
-    for (auto order: other.orderList){
+    for (auto order: other.orderList) {
         orderList.push_back(OrderPair(order));
     }
 }
 
-void Table::StealFromOtherToMe(const Table &other)  {
+void Table::StealFromOtherToMe(const Table &other) {
     capacity = other.capacity;
     open = other.open;
-    for (auto customer : other.customersList){
+    for (auto customer : other.customersList) {
         customersList.push_back(customer);
     }
 
-    for (auto order: other.orderList){
+    for (auto order: other.orderList) {
         orderList.push_back(order);
     }
 }
@@ -209,5 +198,4 @@ void Table::cleanOther(Table &other) {
         other.customersList[i] = nullptr;
         // no deleting here
     }
-//    other.customersList.clear();
 }
