@@ -79,14 +79,14 @@ std::string Order::toString() const {
     return s;
 }
 
-BaseAction* Order::generate(Order &other) {
+BaseAction *Order::generate(Order &other) {
     return new Order(other.tableId);
 }
 
 
 // close table
 
-Close::Close(int id): tableId(id) {
+Close::Close(int id) : tableId(id) {
 
 }
 
@@ -106,8 +106,8 @@ void Close::act(Restaurant &restaurant) {
     }
 
     int bill = table->getBill();
-    std::string msg = "Table "  + std::to_string(tableId) +
-            " was closed. Bill " + std::to_string(bill) + "NIS";
+    std::string msg = "Table " + std::to_string(tableId) +
+                      " was closed. Bill " + std::to_string(bill) + "NIS";
     std::cout << msg << std::endl;
     table->closeTable();
     complete();
@@ -119,14 +119,14 @@ std::string Close::toString() const {
     return s;
 }
 
-BaseAction* Close::generate(Close &other) {
+BaseAction *Close::generate(Close &other) {
     return new Close(other.tableId);
 }
 
 
 //open table
-OpenTable::OpenTable(int id, std::vector<Customer *> &customersList):
-            tableId(id), customers(customersList) {
+OpenTable::OpenTable(int id, std::vector<Customer *> &customersList) :
+        tableId(id), customers(customersList) {
     std::cout << "i was in Open table constructor" << std::endl;
 }
 
@@ -224,7 +224,23 @@ std::string PrintTableStatus::toString() const {
 }
 
 void PrintTableStatus::act(Restaurant &restaurant) {
-
+    Table *table = restaurant.getTable(tableId);
+    std::string currentStatus = table->isOpen() == 1 ? " open" : " close";
+    std::string status =
+            "Table " + std::to_string(tableId) + " status:" + currentStatus;
+    std::cout << status << std::endl;
+    std::cout << "Customers:" << std::endl;
+    for (const auto &customer : table->getCustomers()) {
+        std::string cust = std::to_string(customer->getId()) + " " + customer->getName();
+        std::cout << cust << std::endl;
+    }
+    std::cout << "Orders:" << std::endl;
+    for (const auto &orderPair : table->getOrders()) {
+        std::string dish = orderPair.second.getName() + " " + std::to_string(orderPair.second.getPrice()) + " " +
+                           std::to_string(orderPair.first);
+        std::cout << dish << std::endl;
+    }
+    std::cout << "Current Bill:" + std::to_string(table->getBill()) << std::endl;
 }
 
 PrintTableStatus::PrintTableStatus(int id) : tableId(id) {
@@ -241,7 +257,12 @@ std::string PrintMenu::toString() const {
 }
 
 void PrintMenu::act(Restaurant &restaurant) {
-
+    //todo: figure out how to fetch enum val instead of id
+    for (const auto &dish : restaurant.getMenu()) {
+        std::string msg =
+                dish.getName() + " " + std::to_string(dish.getType()) + " " + std::to_string(dish.getPrice()) + "NIS";
+        std::cout << msg << std::endl;
+    }
 }
 
 
@@ -258,7 +279,14 @@ std::string CloseAll::toString() const {
 }
 
 void CloseAll::act(Restaurant &restaurant) {
-
+    for (int i = 0; i < restaurant.getNumOfTables() - 1; i++) {
+        Table *t = restaurant.getTable(i);
+        if (t->isOpen()) {
+            Close *closeAct = new Close(i);
+            closeAct->act(restaurant);
+            delete closeAct;
+        }
+    }
     restaurant.closeRestuarant();
 }
 
@@ -279,28 +307,28 @@ void MoveCustomer::act(Restaurant &restaurant) {
     Table *source = restaurant.getTable(srcTable);
     Table *dest = restaurant.getTable(dstTable);
 
-    if ((source == nullptr) || (dest == nullptr)){
+    if ((source == nullptr) || (dest == nullptr)) {
         error("Cannot move customer");
-        std::cout << "because null"<< std::endl;
+        std::cout << "because null" << std::endl;
         return;
     }
 
-    if ((! source->isOpen()) || (! dest->isOpen())){
+    if ((!source->isOpen()) || (!dest->isOpen())) {
         error("Cannot move customer");
-        std::cout << "because not open"<< std::endl;
+        std::cout << "because not open" << std::endl;
         return;
     }
 
-    if (dest->getCustomers().size() >= dest->getCapacity()){ // table is full
+    if (dest->getCustomers().size() >= dest->getCapacity()) { // table is full
         error("Cannot move customer");
-        std::cout << "because capacity "<< std::endl;
+        std::cout << "because capacity " << std::endl;
         return;
     }
 
     Customer *mover = source->getCustomer(id);
-    if (mover == nullptr){
+    if (mover == nullptr) {
         error("Cannot move customer");
-        std::cout << "because customer id is bad"<< std::endl;
+        std::cout << "because customer id is bad" << std::endl;
         return;
     }
 
@@ -311,7 +339,7 @@ void MoveCustomer::act(Restaurant &restaurant) {
     source->removeCustomerOrders(id);
     dest->addOrders(customerOrders);
 
-    if (source->getCustomers().empty()){ // table is empty
+    if (source->getCustomers().empty()) { // table is empty
         Close closeActionInstance = Close(srcTable);
         closeActionInstance.act(restaurant);
 
@@ -320,8 +348,8 @@ void MoveCustomer::act(Restaurant &restaurant) {
 
 }
 
-MoveCustomer::MoveCustomer(int src, int dst, int customerId):
-            srcTable(src), dstTable(dst), id(customerId) {}
+MoveCustomer::MoveCustomer(int src, int dst, int customerId) :
+        srcTable(src), dstTable(dst), id(customerId) {}
 
 BaseAction *MoveCustomer::generate(MoveCustomer &other) {
     return new MoveCustomer(other.srcTable, other.dstTable, other.id);

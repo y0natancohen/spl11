@@ -13,8 +13,6 @@ Restaurant::Restaurant() : nextCustomerId(0), nextDishId(0), open(true) {}
 
 //todo:refactor split code
 Restaurant::Restaurant(const std::string &configFilePath) {
-//    nextCustomerId = 0;
-//    nextDishId = 0;
     std::string errMsg = "config file not good";
     std::vector<std::string> lines = getLines(configFilePath);
     // going over the lines
@@ -68,20 +66,10 @@ Restaurant::Restaurant(const std::string &configFilePath) {
             menu.push_back(Dish(d_id, d_name, d_price, d_type));
             ++tempNextDishId;
         }
-
     }
     //important
     nextDishId = tempNextDishId;
     //
-
-    if (false) {
-        // TODO: more verifying here?
-        // TODO: error here?
-        std::cout << errMsg << std::endl;
-        return;
-    } else {
-
-    }
     open = true;
 }
 
@@ -119,60 +107,48 @@ void Restaurant::start() {
         std::cout << cmd << std::endl;
         BaseAction *action;
         std::vector<std::string> words = split(cmd, ' ');
-        if (words.empty()) {continue;}
+        if (words.empty()) { continue; }
         int tableId = getTableId(words);
-
         if (words[0] == "closeall") { //close all
-            //todo: for table in tables close table
             action = new CloseAll();
-        }
-        else if (words[0] == "open") { //open table
+        } else if (words[0] == "open") { //open table
             print("table id is", tableId);
-            if (not verifiedOpen(words)){ continue; }
+            if (!verifiedOpen(words)) { continue; }
             std::vector<Customer *> customers;
             initiateCustomersByType(words, customers);
             action = new OpenTable(tableId, customers);
-
         } else if (words[0] == "order") { //order from table-id
             std::cout << "received order" << std::endl;
-            if (not verifiedCmdTableNum(words)) { continue; }
+            if (!verifiedCmdTableNum(words)) { continue; }
             action = new Order(tableId);
 
         } else if (words[0] == "move") { // move customer
             std::cout << "received move" << std::endl;
-            if (not VerifiedMove(words)) { continue; }
+            if (!VerifiedMove(words)) { continue; }
             int source = std::stoi(words[1]);
             int destination = std::stoi(words[2]);
             int customerId = std::stoi(words[3]);
             action = new MoveCustomer(source, destination, customerId);
-
         } else if (words[0] == "close") {
-            if (not verifiedCmdTableNum(words)) { continue; }
+            if (!verifiedCmdTableNum(words)) { continue; }
             std::cout << "received close " << std::endl;
             action = new Close(tableId);
-
-        } else if (cmd == "menu") { //print menut
+        } else if (words[0] == "menu") { //print menut
             action = new PrintMenu();
-
-        } else if (cmd == "status") { //print table status
+        } else if (words[0] == "status") { //print table status
             action = new PrintTableStatus(tableId);
-
-        } else if (cmd == "log") { //print actions log
+        } else if (words[0] == "log") { //print actions log
             action = new PrintActionsLog();
-
-        } else if (cmd == "backup") { //backup restaurant
+        } else if (words[0] == "backup") { //backup restaurant
             action = new BackupRestaurant();
-
-        } else if (cmd == "restore") { //restore restaurant
+        } else if (words[0] == "restore") { //restore restaurant
             action = new RestoreResturant();
-
         } else {
             continue;
         }
         // BaseAction destructor and its derivatives should clean memory mass here
         action->act(*this);
         delete action;
-
     }
 }
 
@@ -286,11 +262,11 @@ void Restaurant::closeRestuarant() {
 }
 
 bool Restaurant::VerifiedMove(std::vector<std::string> words) {
-    if (not words.size() == 4){
+    if (words.size() != 4) {
         return false;
     }
     for (int i = 1; i < words.size(); ++i) {
-        if (not isNumber(words[i])){
+        if (! isNumber(words[i])) {
             return false;
         }
     }
@@ -298,11 +274,9 @@ bool Restaurant::VerifiedMove(std::vector<std::string> words) {
 }
 
 
-
-
 bool Restaurant::isNumber(std::string s) {
     for (int i = 0; i < s.length(); i++)
-        if (not std::isdigit(s[i])){
+        if (! std::isdigit(s[i])) {
             return false;
         }
     return true;
@@ -310,7 +284,7 @@ bool Restaurant::isNumber(std::string s) {
 
 int Restaurant::getTableId(std::vector<std::string> words) {
     int tableId = 2147483646;  // int max
-    if (words.size() > 1){
+    if (words.size() > 1) {
         tableId = std::stoi(words[1]);
     }
     return tableId;
@@ -321,7 +295,7 @@ bool Restaurant::verifiedOpen(const std::vector<std::string> words) {
 }
 
 bool Restaurant::verifiedCmdTableNum(std::vector<std::string> words) {
-    if (words.size() != 2){
+    if (words.size() != 2) {
         return false;
     };
     return isNumber(words[1]);
@@ -377,7 +351,7 @@ void Restaurant::cleanMySelf() {
     actionsLog.clear();
 }
 
-void Restaurant::copyFromOtherIntoMe(const Restaurant &other)  {
+void Restaurant::copyFromOtherIntoMe(const Restaurant &other) {
     nextDishId = other.nextDishId;
     nextCustomerId = other.nextCustomerId;
     open = other.open;
@@ -387,20 +361,20 @@ void Restaurant::copyFromOtherIntoMe(const Restaurant &other)  {
         tables.push_back(new Table(*table));
     }
     // we are generating new actions!
-    for (auto action: other.actionsLog){
+    for (auto action: other.actionsLog) {
         actionsLog.push_back(action->generate(*action));
     }
 }
 
-void Restaurant::StealFromOtherToMe(const Restaurant &other)  {
+void Restaurant::StealFromOtherToMe(const Restaurant &other) {
     nextDishId = other.nextDishId;
     nextCustomerId = other.nextCustomerId;
     open = other.open;
-    for (auto table : other.tables){
+    for (auto table : other.tables) {
         tables.push_back(table);
     }
 
-    for (auto action: other.actionsLog){
+    for (auto action: other.actionsLog) {
         actionsLog.push_back(action);
     }
 }
