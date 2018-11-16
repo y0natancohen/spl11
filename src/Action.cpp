@@ -32,21 +32,10 @@ std::string BaseAction::getErrorMsg() const {
     return errorMsg;
 }
 
-std::string BaseAction::baseToString() const {
-    if (status == COMPLETED) {
-        return cmd;
-    } else if (status == ERROR) {
-        return cmd + "\n" + errorMsg;
-    }
-}
-
 BaseAction::~BaseAction() {
 
 }
 
-BaseAction *BaseAction::generate(BaseAction &other) {
-    return nullptr;
-}
 
 Order::Order(int id) : tableId(id) {
 
@@ -75,12 +64,12 @@ void Order::act(Restaurant &restaurant) {
 }
 
 std::string Order::toString() const {
-    std::string s = "a very nice order";
+    std::string s = "order " + std::to_string(tableId) + " " + std::to_string(getStatus());
     return s;
 }
 
-BaseAction *Order::generate(Order &other) {
-    return new Order(other.tableId);
+BaseAction *Order::clone() {
+    return new Order(tableId);
 }
 
 
@@ -115,12 +104,11 @@ void Close::act(Restaurant &restaurant) {
 }
 
 std::string Close::toString() const {
-    std::string s = "a very nice close table";
-    return s;
+    return "close " + std::to_string(tableId) + " " + std::to_string(getStatus());
 }
 
-BaseAction *Close::generate(Close &other) {
-    return new Close(other.tableId);
+BaseAction *Close::clone() {
+    return new Close(tableId);
 }
 
 
@@ -131,8 +119,13 @@ OpenTable::OpenTable(int id, std::vector<Customer *> &customersList) :
 }
 
 std::string OpenTable::toString() const {
-    std::string s = "a very nice open table";
-    return s;
+    std::string msg ="open " + std::to_string(tableId) + " ";
+    for (const auto &customer : customers) {
+        msg +=customer->getName() + ",";
+        //todo:elad extract cust type
+        //msg +=customer->;
+    }
+    return  msg + std::to_string(getStatus());
 }
 
 
@@ -162,8 +155,14 @@ void OpenTable::act(Restaurant &restaurant) {
 
 }
 
-BaseAction *OpenTable::generate(OpenTable &other) {
-    return new OpenTable(other.tableId, customers);
+BaseAction *OpenTable::clone() {
+    return new OpenTable(tableId, customers);
+}
+
+OpenTable::~OpenTable() {
+    for(auto cust : customers){
+        delete cust;
+    }
 }
 
 //restore
@@ -177,16 +176,17 @@ void RestoreResturant::act(Restaurant &restaurant) {
 }
 
 std::string RestoreResturant::toString() const {
-    return std::string();
+    return "restore " + std::to_string(getStatus());
 }
 
-BaseAction *RestoreResturant::generate(RestoreResturant &other) {
+BaseAction *RestoreResturant::clone() {
     return new RestoreResturant();
 }
 
+
 //backup
 std::string BackupRestaurant::toString() const {
-    return std::string();
+    return "backup " + std::to_string(getStatus());
 }
 
 void BackupRestaurant::act(Restaurant &restaurant) {
@@ -198,29 +198,32 @@ BackupRestaurant::BackupRestaurant() {
 
 }
 
-BaseAction *BackupRestaurant::generate(BackupRestaurant &other) {
-    return new BackupRestaurant();
+BaseAction *BackupRestaurant::clone() {
+    return new RestoreResturant();
 }
+
 
 //actions log
 std::string PrintActionsLog::toString() const {
-    return std::string();
+    return "";
 }
 
 void PrintActionsLog::act(Restaurant &restaurant) {
-
+    for (const auto &actionLog : restaurant.getActionsLog()) {
+        std::cout << actionLog->toString() << std::endl;
+    }
 }
 
-
-BaseAction *PrintActionsLog::generate(PrintActionsLog &other) {
-    return new PrintActionsLog();
-}
 
 PrintActionsLog::PrintActionsLog() {}
 
+BaseAction *PrintActionsLog::clone() {
+    return new PrintActionsLog();
+}
+
 //status
 std::string PrintTableStatus::toString() const {
-    return std::string();
+    return "status " + std::to_string(tableId) + " " + std::to_string(getStatus());
 }
 
 void PrintTableStatus::act(Restaurant &restaurant) {
@@ -231,6 +234,7 @@ void PrintTableStatus::act(Restaurant &restaurant) {
     std::cout << status << std::endl;
     std::cout << "Customers:" << std::endl;
     for (const auto &customer : table->getCustomers()) {
+        //todo:elad move to toString of Customer
         std::string cust = std::to_string(customer->getId()) + " " + customer->getName();
         std::cout << cust << std::endl;
     }
@@ -247,13 +251,14 @@ PrintTableStatus::PrintTableStatus(int id) : tableId(id) {
 
 }
 
-BaseAction *PrintTableStatus::generate(PrintTableStatus &other) {
-    return new PrintTableStatus(other.tableId);
+BaseAction *PrintTableStatus::clone() {
+    return new PrintTableStatus(tableId);
 }
+
 
 //print menu
 std::string PrintMenu::toString() const {
-    return std::string();
+    return "menu " + std::to_string(getStatus());
 }
 
 void PrintMenu::act(Restaurant &restaurant) {
@@ -270,12 +275,13 @@ PrintMenu::PrintMenu() {
 
 }
 
-BaseAction *PrintMenu::generate(PrintMenu &other) {
+BaseAction *PrintMenu::clone() {
     return new PrintMenu();
 }
 
+
 std::string CloseAll::toString() const {
-    return std::string();
+    return "closeall " + std::to_string(getStatus());
 }
 
 void CloseAll::act(Restaurant &restaurant) {
@@ -295,12 +301,14 @@ CloseAll::CloseAll() {
 
 }
 
-BaseAction *CloseAll::generate(CloseAll &other) {
+BaseAction *CloseAll::clone() {
     return new CloseAll();
 }
 
+
 std::string MoveCustomer::toString() const {
-    return std::string();
+    return "move " + std::to_string(srcTable) + " " + std::to_string(dstTable) + " " +
+           std::to_string(id) + " " + std::to_string(getStatus());
 }
 
 void MoveCustomer::act(Restaurant &restaurant) {
@@ -351,6 +359,8 @@ void MoveCustomer::act(Restaurant &restaurant) {
 MoveCustomer::MoveCustomer(int src, int dst, int customerId) :
         srcTable(src), dstTable(dst), id(customerId) {}
 
-BaseAction *MoveCustomer::generate(MoveCustomer &other) {
-    return new MoveCustomer(other.srcTable, other.dstTable, other.id);
+BaseAction *MoveCustomer::clone() {
+    return new MoveCustomer(srcTable,dstTable,id);
 }
+
+

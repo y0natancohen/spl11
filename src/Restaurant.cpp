@@ -121,7 +121,6 @@ void Restaurant::start() {
             std::cout << "received order" << std::endl;
             if (!verifiedCmdTableNum(words)) { continue; }
             action = new Order(tableId);
-
         } else if (words[0] == "move") { // move customer
             std::cout << "received move" << std::endl;
             if (!VerifiedMove(words)) { continue; }
@@ -147,15 +146,18 @@ void Restaurant::start() {
             continue;
         }
         // BaseAction destructor and its derivatives should clean memory mass here
+        actionsLog.push_back(action->clone());
         action->act(*this);
         delete action;
     }
 }
 
 void Restaurant::initiateCustomersByType(const std::vector<std::string> &words, std::vector<Customer *> &customers) {
-    for (int i = 0; i < words.size(); ++i) {
-        if (i >= 2) { // customer section
-            std::string customer = words[i];
+    if (words.size() >= 2) {
+        std::vector<std::string> customersInPairs = split(words[2], ' ');
+        for (int i = 0; i < customersInPairs.size(); ++i) {
+            // customer section
+            std::string customer = customersInPairs[i];
             std::vector<std::string> pair = split(customer, ',');
             std::string c_name = pair[0];
             std::string c_type = pair[1];
@@ -266,7 +268,7 @@ bool Restaurant::VerifiedMove(std::vector<std::string> words) {
         return false;
     }
     for (int i = 1; i < words.size(); ++i) {
-        if (! isNumber(words[i])) {
+        if (!isNumber(words[i])) {
             return false;
         }
     }
@@ -276,7 +278,7 @@ bool Restaurant::VerifiedMove(std::vector<std::string> words) {
 
 bool Restaurant::isNumber(std::string s) {
     for (int i = 0; i < s.length(); i++)
-        if (! std::isdigit(s[i])) {
+        if (!std::isdigit(s[i])) {
             return false;
         }
     return true;
@@ -362,7 +364,7 @@ void Restaurant::copyFromOtherIntoMe(const Restaurant &other) {
     }
     // we are generating new actions!
     for (auto action: other.actionsLog) {
-        actionsLog.push_back(action->generate(*action));
+        actionsLog.push_back(action->clone());
     }
 }
 

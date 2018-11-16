@@ -15,23 +15,16 @@ class Restaurant;
 class BaseAction {
 public:
     BaseAction();
-
-//    BaseAction(std::string _cmd);
-
     virtual ~BaseAction();
-
     ActionStatus getStatus() const;
 
     virtual void act(Restaurant &restaurant) = 0;
 
     virtual std::string toString() const = 0;
 
-    virtual std::string baseToString() const;
-    virtual BaseAction* generate(BaseAction &other); // supposed to be =0 but compile error
-
+    virtual BaseAction *clone() = 0;
 
 protected:
-    std::string cmd;
 
     void complete();
 
@@ -41,7 +34,7 @@ protected:
 
 private:
     std::string errorMsg;
-    ActionStatus status = PENDING;
+    ActionStatus status;
 };
 
 class OpenTable : public BaseAction {
@@ -51,8 +44,9 @@ public:
     void act(Restaurant &restaurant);
 
     std::string toString() const;
-    BaseAction* generate(OpenTable &other);
+    BaseAction *clone();
 
+    ~OpenTable();
 private:
     const int tableId;
     std::vector<Customer *> customers; // this supposed to point to Table.customers
@@ -62,12 +56,10 @@ class Order : public BaseAction {
 public:
     Order(int id);
 
-//    Order(int id, std::string cmd);
-
     void act(Restaurant &restaurant);
 
     std::string toString() const;
-    BaseAction* generate(Order &other);
+    BaseAction *clone();
 private:
     const int tableId;
 };
@@ -77,13 +69,10 @@ class MoveCustomer : public BaseAction {
 public:
     MoveCustomer(int src, int dst, int customerId);
 
-//    MoveCustomer(int src, int dst, int customerId, std::string cmd);
-
     void act(Restaurant &restaurant);
 
     std::string toString() const;
-    BaseAction* generate(MoveCustomer &other);
-
+    BaseAction *clone();
 private:
     const int srcTable;
     const int dstTable;
@@ -95,13 +84,10 @@ class Close : public BaseAction {
 public:
     Close(int id);
 
-//    Close(int id, std::string cmd);
-
     void act(Restaurant &restaurant);
 
     std::string toString() const;
-    BaseAction* generate(Close &other);
-
+    BaseAction *clone();
 private:
     const int tableId;
 };
@@ -111,12 +97,10 @@ class CloseAll : public BaseAction {
 public:
     CloseAll();
 
-//    CloseAll(std::string cmd);
-
     void act(Restaurant &restaurant);
 
     std::string toString() const;
-    BaseAction* generate(CloseAll &other);
+    BaseAction *clone();
 
 private:
 };
@@ -126,13 +110,10 @@ class PrintMenu : public BaseAction {
 public:
     PrintMenu();
 
-//    PrintMenu(std::string cmd);
-
     void act(Restaurant &restaurant);
 
     std::string toString() const;
-    BaseAction* generate(PrintMenu &other);
-
+    BaseAction *clone();
 private:
 };
 
@@ -141,13 +122,10 @@ class PrintTableStatus : public BaseAction {
 public:
     PrintTableStatus(int id);
 
-//    PrintTableStatus(int id, std::string cmd);
-
     void act(Restaurant &restaurant);
 
     std::string toString() const;
-    BaseAction* generate(PrintTableStatus &other);
-
+    BaseAction *clone();
 private:
     const int tableId;
 };
@@ -156,13 +134,11 @@ private:
 class PrintActionsLog : public BaseAction {
 public:
     PrintActionsLog();
-//    PrintActionsLog(std::string cmd);
 
     void act(Restaurant &restaurant);
 
     std::string toString() const;
-    BaseAction* generate(PrintActionsLog &other);
-
+    BaseAction *clone();
 private:
 };
 
@@ -171,13 +147,10 @@ class BackupRestaurant : public BaseAction {
 public:
     BackupRestaurant();
 
-//    BackupRestaurant(std::string cmd);
-
     void act(Restaurant &restaurant);
 
     std::string toString() const;
-    BaseAction* generate(BackupRestaurant &other);
-
+    BaseAction *clone();
 private:
 };
 
@@ -186,14 +159,10 @@ class RestoreResturant : public BaseAction {
 public:
     RestoreResturant();
 
-//    RestoreResturant(std::string cmd);
-
     void act(Restaurant &restaurant);
 
     std::string toString() const;
-    BaseAction* generate(RestoreResturant &other);
-
+    BaseAction *clone();
 };
-
 
 #endif

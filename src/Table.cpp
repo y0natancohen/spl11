@@ -15,8 +15,7 @@ int Table::getCapacity() const {
 }
 
 void Table::addCustomer(Customer *customer) {
-    // TODO: more things here?
-    customersList.push_back(customer);
+    customersList.push_back(customer->clone());
 }
 
 void Table::removeCustomer(int id) {
@@ -173,8 +172,7 @@ void Table::copyFromOtherIntoMe(const Table &other) {
 
     // we are generating new orders!
     for (auto customer: other.customersList) {
-        customersList.push_back(customer->generate(customer->getName(),
-                                                   customer->getId()));
+        customersList.push_back(customer->clone());
     }
     for (auto order: other.orderList) {
         orderList.push_back(OrderPair(order));

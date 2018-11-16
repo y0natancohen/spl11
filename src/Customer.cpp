@@ -79,8 +79,9 @@ std::string VegetarianCustomer::toString() const {
     return getName();
 }
 
-Customer* VegetarianCustomer::generate(std::string name, int id) {
-    return new VegetarianCustomer(name, id);
+
+Customer *VegetarianCustomer::clone() {
+    return new VegetarianCustomer(getName(),getId());
 }
 
 // CHEAP
@@ -122,9 +123,10 @@ std::string CheapCustomer::toString() const {
     return getName();
 }
 
-Customer* CheapCustomer::generate(std::string name, int id) {
-    return new CheapCustomer(name, id);
+Customer *CheapCustomer::clone() {
+    return new CheapCustomer(getName(), getId());
 }
+
 
 // SPICY
 
@@ -198,14 +200,11 @@ void SpicyCustomer::setOrdered(bool newState) {
     ordered = newState;
 }
 
-SpicyCustomer::SpicyCustomer(const SpicyCustomer &other):
-            Customer(other.getName(), other.getId()) {
-    ordered = other.ordered;
+
+Customer *SpicyCustomer::clone() {
+    return new SpicyCustomer(getName(), getId());
 }
 
-Customer* SpicyCustomer::generate(std::string name, int id) {
-    return new SpicyCustomer(name, id);
-}
 
 // ALCOHOL
 
@@ -267,13 +266,8 @@ void AlchoholicCustomer::increaseDrinksHad() {
     ++drinksHad;
 }
 
-AlchoholicCustomer::AlchoholicCustomer(const AlchoholicCustomer &other):
-        Customer(other.getName(), other.getId())  {
-    drinksHad = other.drinksHad;
-}
-
-Customer* AlchoholicCustomer::generate(std::string name, int id) {
-    return new AlchoholicCustomer(name, id);
+Customer *AlchoholicCustomer::clone() {
+    return new AlchoholicCustomer(getName(),getId());
 }
 
 
@@ -302,6 +296,10 @@ void Customer::sortByPrice(std::vector<SortableDish> &vec) {
 Customer::Customer(Customer &other):
             name(other.name), id(other.id) {
     // copy everything from other and put it in me
+}
+
+Customer::~Customer() {
+
 }
 
 
