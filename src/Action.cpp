@@ -141,12 +141,7 @@ void OpenTable::act(Restaurant &restaurant) {
 }
 
 BaseAction *OpenTable::clone() {
-    OpenTable *ot = new OpenTable(*this);
-    ot->customers.clear();
-    for (auto customer: customers) {
-        ot->customers.push_back(customer->clone());
-    }
-    return ot;
+    return new OpenTable(*this);
 }
 
 OpenTable::~OpenTable() {
