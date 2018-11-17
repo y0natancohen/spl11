@@ -264,13 +264,6 @@ void Restaurant::cleanMySelf() {
     actionsLog.clear();
 }
 
-void Restaurant::createBackup() {
-    backup = new Restaurant(*this);
-}
-
-void Restaurant::restoreFromBackup() {
-
-}
 
 void Restaurant::copyFromOtherIntoMe(const Restaurant &other) {
     nextDishId = other.nextDishId;

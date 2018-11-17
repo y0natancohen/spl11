@@ -42,14 +42,11 @@ Order::Order(int id) : tableId(id) {
 
 void Order::act(Restaurant &restaurant) {
     Table *table = restaurant.getTable(tableId);
-
     if (table == nullptr) {
-        std::cout << 1 << std::endl;
         error("Table does not exist or is not open");
         return;
     }
     if (!table->isOpen()) {
-        std::cout << 2 << std::endl;
         error("Table does not exist or is not open");
         return;
     }
@@ -58,7 +55,9 @@ void Order::act(Restaurant &restaurant) {
 }
 
 std::string Order::toString() const {
-    std::string s = "order " + std::to_string(tableId) + " " + std::to_string(getStatus());
+    std::string s = "order " + std::to_string(tableId) + " "
+                    + std::to_string(getStatus()) + " "
+                    + getErrorMsg();
     return s;
 }
 
@@ -91,7 +90,9 @@ void Close::act(Restaurant &restaurant) {
 }
 
 std::string Close::toString() const {
-    return "close " + std::to_string(tableId) + " " + std::to_string(getStatus());
+    return "close " + std::to_string(tableId) + " "
+           + std::to_string(getStatus()) + " "
+           + getErrorMsg();
 }
 
 BaseAction *Close::clone() {
@@ -158,11 +159,18 @@ RestoreResturant::RestoreResturant() {
 
 
 void RestoreResturant::act(Restaurant &restaurant) {
-    restaurant.restoreFromBackup();
+    if (backup == nullptr) {
+        error("No backup available");
+        return;
+    } else {
+        restaurant = *backup;
+    }
+    complete();
 }
 
 std::string RestoreResturant::toString() const {
-    return "restore " + std::to_string(getStatus());
+    return "restore " + std::to_string(getStatus()) + " "
+           + getErrorMsg();
 }
 
 BaseAction *RestoreResturant::clone() {
@@ -172,11 +180,13 @@ BaseAction *RestoreResturant::clone() {
 
 //backup
 std::string BackupRestaurant::toString() const {
-    return "backup " + std::to_string(getStatus());
+    return "backup " + std::to_string(getStatus()) + " "
+           + getErrorMsg();
 }
 
 void BackupRestaurant::act(Restaurant &restaurant) {
-    restaurant.createBackup();
+    backup = new Restaurant(restaurant);
+    complete();
 }
 
 
@@ -198,6 +208,7 @@ void PrintActionsLog::act(Restaurant &restaurant) {
     for (const auto &actionLog : restaurant.getActionsLog()) {
         std::cout << actionLog->toString() << std::endl;
     }
+    complete();
 }
 
 
@@ -209,7 +220,9 @@ BaseAction *PrintActionsLog::clone() {
 
 //status
 std::string PrintTableStatus::toString() const {
-    return "status " + std::to_string(tableId) + " " + std::to_string(getStatus());
+    return "status " + std::to_string(tableId) + " "
+           + std::to_string(getStatus()) + " "
+           + getErrorMsg();
 }
 
 void PrintTableStatus::act(Restaurant &restaurant) {
@@ -231,6 +244,7 @@ void PrintTableStatus::act(Restaurant &restaurant) {
         std::cout << dish << std::endl;
     }
     std::cout << "Current Bill:" + std::to_string(table->getBill()) << std::endl;
+    complete();
 }
 
 PrintTableStatus::PrintTableStatus(int id) : tableId(id) {
@@ -242,7 +256,9 @@ BaseAction *PrintTableStatus::clone() {
 
 //print menu
 std::string PrintMenu::toString() const {
-    return "menu " + std::to_string(getStatus());
+    return "menu "
+           + std::to_string(getStatus()) + " "
+           + getErrorMsg();
 }
 
 void PrintMenu::act(Restaurant &restaurant) {
@@ -252,6 +268,7 @@ void PrintMenu::act(Restaurant &restaurant) {
                 dish.getName() + " " + std::to_string(dish.getType()) + " " + std::to_string(dish.getPrice()) + "NIS";
         std::cout << msg << std::endl;
     }
+    complete();
 }
 
 
@@ -265,7 +282,8 @@ BaseAction *PrintMenu::clone() {
 
 
 std::string CloseAll::toString() const {
-    return "closeall " + std::to_string(getStatus());
+    return "closeall " + std::to_string(getStatus()) + " "
+           + getErrorMsg();
 }
 
 void CloseAll::act(Restaurant &restaurant) {
@@ -278,6 +296,7 @@ void CloseAll::act(Restaurant &restaurant) {
         }
     }
     restaurant.closeRestuarant();
+    complete();
 }
 
 
@@ -292,7 +311,8 @@ BaseAction *CloseAll::clone() {
 
 std::string MoveCustomer::toString() const {
     return "move " + std::to_string(srcTable) + " " + std::to_string(dstTable) + " " +
-           std::to_string(id) + " " + std::to_string(getStatus());
+           std::to_string(id) + " " + std::to_string(getStatus()) + " "
+           + getErrorMsg();
 }
 
 void MoveCustomer::act(Restaurant &restaurant) {
