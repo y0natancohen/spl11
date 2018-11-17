@@ -10,17 +10,16 @@ class Customer{
 public:
     virtual ~Customer();
     Customer(std::string c_name, int c_id);
-    Customer(Customer &other);
+
     virtual std::vector<int> order(const std::vector<Dish> &menu)=0;
     virtual std::string toString() const = 0;
+	Customer& operator=(const Customer &other);
 
-    virtual Customer* clone() = 0;
+	virtual Customer* clone() = 0;
     std::string getName() const;
     int getId() const;
     void sortById(std::vector<SortableDish> &vec);
     void sortByPrice(std::vector<SortableDish> &vec);
-	void print(std::string s, int i);
-	void print(std::string s);
 
 private:
     const std::string name;

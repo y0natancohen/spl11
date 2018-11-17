@@ -68,7 +68,6 @@ private:
 class MoveCustomer : public BaseAction {
 public:
     MoveCustomer(int src, int dst, int customerId);
-
     void act(Restaurant &restaurant);
 
     std::string toString() const;
@@ -83,7 +82,6 @@ private:
 class Close : public BaseAction {
 public:
     Close(int id);
-
     void act(Restaurant &restaurant);
 
     std::string toString() const;
@@ -158,7 +156,6 @@ private:
 class RestoreResturant : public BaseAction {
 public:
     RestoreResturant();
-
     void act(Restaurant &restaurant);
 
     std::string toString() const;

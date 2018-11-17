@@ -25,15 +25,12 @@ VegetarianCustomer::VegetarianCustomer(std::string name, int id):
                     Customer(name, id) {}
 
 std::vector<int> VegetarianCustomer::order(const std::vector<Dish> &menu) {
-    std::cout << "vegeterian ordering"<< std::endl;
-
     // vegetarian dish with the smallest id in the menu
     // the most expensive beverage (Non-alcoholic).
     std::vector<int> result;
     if (menu.size() <=  0){
         return result;
     }
-
     // veg
     std::vector<SortableDish> vegis;
     for (auto dish: menu){
@@ -41,15 +38,12 @@ std::vector<int> VegetarianCustomer::order(const std::vector<Dish> &menu) {
             vegis.push_back(SortableDish(dish));
         }
     }
-
     if (vegis.size() > 0){
 
         sortById(vegis);
         result.push_back(vegis[0].getId());
     }
-
     // drinks
-
     std::vector<SortableDish> drinks;
     for (auto dish: menu){
         if (dish.getType() == BVG){
@@ -57,7 +51,6 @@ std::vector<int> VegetarianCustomer::order(const std::vector<Dish> &menu) {
         }
     }
     if (drinks.size() > 0){
-
         sortByPrice(drinks);
         int highest_price = drinks[drinks.size() - 1].getPrice();
         std::vector<SortableDish> same_prices;
@@ -69,9 +62,7 @@ std::vector<int> VegetarianCustomer::order(const std::vector<Dish> &menu) {
         sortById(same_prices);
         result.push_back(same_prices[0].getId());
     }
-
     return result;
-
 }
 
 
@@ -81,7 +72,7 @@ std::string VegetarianCustomer::toString() const {
 
 
 Customer *VegetarianCustomer::clone() {
-    return new VegetarianCustomer(getName(),getId());
+    return new VegetarianCustomer(*this);
 }
 
 // CHEAP
@@ -98,13 +89,11 @@ std::vector<int> CheapCustomer::order(const std::vector<Dish> &menu) {
     if (menu.size() <=  0){
         return result;
     }
-
     std::vector<SortableDish> dishes;
     for (auto dish: menu){
         dishes.push_back(SortableDish(dish));
     }
     if (dishes.size() > 0){
-
         sortByPrice(dishes);
         int lowest_price = dishes[0].getPrice();
         std::vector<SortableDish> same_prices;
@@ -124,7 +113,7 @@ std::string CheapCustomer::toString() const {
 }
 
 Customer *CheapCustomer::clone() {
-    return new CheapCustomer(getName(), getId());
+    return new CheapCustomer(*this);
 }
 
 
@@ -202,7 +191,7 @@ void SpicyCustomer::setOrdered(bool newState) {
 
 
 Customer *SpicyCustomer::clone() {
-    return new SpicyCustomer(getName(), getId());
+    return new SpicyCustomer(*this);
 }
 
 
@@ -267,18 +256,8 @@ void AlchoholicCustomer::increaseDrinksHad() {
 }
 
 Customer *AlchoholicCustomer::clone() {
-    return new AlchoholicCustomer(getName(),getId());
+    return new AlchoholicCustomer(*this);
 }
-
-
-void Customer::print(std::string s, int i) {
-    std::cout << s + std::to_string(i) << std::endl;
-}
-
-void Customer::print(std::string s) {
-    std::cout << s << std::endl;
-}
-
 
 void Customer::sortById(std::vector<SortableDish> &vec) {
     std::sort(vec.begin(), vec.end(),
@@ -293,13 +272,10 @@ void Customer::sortByPrice(std::vector<SortableDish> &vec) {
               {return lhs.getPrice()< rhs.getPrice();});
 }
 
-Customer::Customer(Customer &other):
-            name(other.name), id(other.id) {
-    // copy everything from other and put it in me
-}
 
 Customer::~Customer() {
 
 }
+
 
 

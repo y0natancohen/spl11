@@ -20,8 +20,9 @@ public:
     void cleanOther(Restaurant &other);
     void StealFromOtherToMe(const Restaurant &other);
     void copyFromOtherIntoMe(const Restaurant &other);
+    void createBackup();
+    void restoreFromBackup();
     void cleanMySelf();
-
     void start();
     int getNumOfTables() const;
     Table* getTable(int ind);
@@ -29,20 +30,9 @@ public:
     std::vector<Dish>& getMenu();
     std::vector<std::string> split(const std::string& s, char delimiter);
     std::vector<std::string> getLines(const std::string &configFilePath);
-    int generateDishId();
     int generateCustomerId();
     DishType getType(std::string &type_s);
-    bool startsWith(std::string a_string, std::string prefix);
-    void print(std::string s, int i);
-    void print(std::string s);
     void closeRestuarant();
-    bool verifiedOpen(const std::vector<std::string> words);
-    bool verifiedCmdTableNum(std::vector<std::string> words);
-    bool VerifiedMove(std::vector<std::string> words);
-    bool verifiedClose(std::vector<std::string> words);
-    bool verifiedStatus(std::vector<std::string> words);
-    bool isNumber(std::string s);
-    int getTableId(std::vector<std::string> words);
     void initiateCustomersByType(const std::vector<std::string> &words, std::vector<Customer *> &customers);
 
 private:

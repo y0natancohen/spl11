@@ -8,6 +8,8 @@
 #include <vector>
 #include "../include/Restaurant.h"
 
+extern Restaurant *backup;
+
 Restaurant::Restaurant() : nextCustomerId(0), nextDishId(0), open(true) {}
 
 
@@ -32,37 +34,27 @@ Restaurant::Restaurant(const std::string &configFilePath) {
     }
     // making the tables
     int num_tables = std::stoi(lines[num_of_tables_index]);
-    print("num of tables is", num_tables);
     std::string table_desc_s = lines[tables_desc_index];
     std::vector<std::string> sizes = split(table_desc_s, ',');
     if (sizes.size() != num_tables) {
-        std::cout << errMsg << std::endl;
-        print("got ", sizes.size());
-        print("number of tables is ", num_tables);
-        // TODO: error here?
         return;
     }
     for (auto size_s: sizes) {
         int size = std::stoi(size_s);
-        print("making table with seats ", size);
         Table *table = new Table(size);
         tables.push_back(table);
     }
-
     // making the menu
     int tempNextDishId = 0;
-
     for (int i = 0; i < lines.size(); ++i) {
         if (i >= menu_index) {  // menu lines
             std::string line = lines[i];
             std::vector<std::string> params = split(line, ',');
-
             std::string d_name = params[0];
             int d_price = std::stoi(params[2]);
             int d_id = tempNextDishId;
             std::string type_s = params[1];
             DishType d_type = getType(type_s);
-
             menu.push_back(Dish(d_id, d_name, d_price, d_type));
             ++tempNextDishId;
         }
@@ -102,53 +94,47 @@ std::vector<std::string> Restaurant::getLines(const std::string &configFilePath)
 void Restaurant::start() {
     std::cout << "Restaurant is now open!" << std::endl;
     while (open) {
+        // assuming input is the correct format for each command!!
+        // as described in assignment page
+        BaseAction *action = nullptr;
         std::string cmd;
         std::getline(std::cin, cmd);
-        std::cout << cmd << std::endl;
-        BaseAction *action;
         std::vector<std::string> words = split(cmd, ' ');
-        if (words.empty()) { continue; }
-        int tableId = getTableId(words);
+        int tableId = -1;
         if (words[0] == "closeall") { //close all
             action = new CloseAll();
         } else if (words[0] == "open") { //open table
-            print("table id is", tableId);
-            if (!verifiedOpen(words)) { continue; }
+            tableId = std::stoi(words[1]);
             std::vector<Customer *> customers;
             initiateCustomersByType(words, customers);
             action = new OpenTable(tableId, customers);
         } else if (words[0] == "order") { //order from table-id
-            std::cout << "received order" << std::endl;
-            if (!verifiedCmdTableNum(words)) { continue; }
+            tableId = std::stoi(words[1]);
             action = new Order(tableId);
         } else if (words[0] == "move") { // move customer
-            std::cout << "received move" << std::endl;
-            if (!VerifiedMove(words)) { continue; }
             int source = std::stoi(words[1]);
             int destination = std::stoi(words[2]);
             int customerId = std::stoi(words[3]);
             action = new MoveCustomer(source, destination, customerId);
         } else if (words[0] == "close") {
-            if (!verifiedCmdTableNum(words)) { continue; }
-            std::cout << "received close " << std::endl;
+            tableId = std::stoi(words[1]);
             action = new Close(tableId);
-        } else if (words[0] == "menu") { //print menut
+        } else if (words[0] == "menu") { //print menu
             action = new PrintMenu();
-        } else if (words[0] == "status") { //print table status
+        } else if (words[0] == "status") {
             action = new PrintTableStatus(tableId);
-        } else if (words[0] == "log") { //print actions log
+        } else if (words[0] == "log") {
             action = new PrintActionsLog();
-        } else if (words[0] == "backup") { //backup restaurant
+        } else if (words[0] == "backup") {
             action = new BackupRestaurant();
-        } else if (words[0] == "restore") { //restore restaurant
+        } else if (words[0] == "restore") {
             action = new RestoreResturant();
-        } else {
-            continue;
         }
-        // BaseAction destructor and its derivatives should clean memory mass here
-        actionsLog.push_back(action->clone());
-        action->act(*this);
-        delete action;
+        if (action != nullptr) {
+            // BaseAction destructor and its derivatives should clean memory mass here
+            action->act(*this);
+            actionsLog.push_back(action->clone());
+        }
     }
 }
 
@@ -164,18 +150,12 @@ void Restaurant::initiateCustomersByType(const std::vector<std::string> &words, 
             int c_id = generateCustomerId();
             if (c_type == "veg") {
                 customers.push_back(new VegetarianCustomer(c_name, c_id));
-                std::cout << "making a veg" << std::endl;
             } else if (c_type == "chp") {
                 customers.push_back(new CheapCustomer(c_name, c_id));
-                std::cout << "making a cheap" << std::endl;
             } else if (c_type == "spc") {
                 customers.push_back(new SpicyCustomer(c_name, c_id));
-                std::cout << "making a spicy" << std::endl;
             } else if (c_type == "alc") {
                 customers.push_back(new AlchoholicCustomer(c_name, c_id));
-                std::cout << "making a alcoholic" << std::endl;
-            } else {
-                print("unknown customer type - " + c_type); // TODO: what here?
             }
         }
     }
@@ -211,13 +191,6 @@ std::vector<std::string> Restaurant::split(const std::string &s, char delimiter)
     return tokens;
 }
 
-
-int Restaurant::generateDishId() {
-    int idToReturn = nextDishId;
-    ++nextDishId;
-    return idToReturn;
-}
-
 int Restaurant::generateCustomerId() {
     int idToReturn = nextCustomerId;
     ++nextCustomerId;
@@ -234,74 +207,12 @@ Restaurant::~Restaurant() {
     }
     actionsLog.clear();
     std::cout << "Restaurant is now closed!" << std::endl;
-
-
-}
-
-bool Restaurant::startsWith(std::string a_string, std::string prefix) {
-    int len = prefix.size();
-    if (a_string.size() < len) {
-        return false;
-    } else {
-        auto res = std::mismatch(prefix.begin(), prefix.end(), a_string.begin());
-
-        return (res.first == prefix.end());
-    }
-
-}
-
-void Restaurant::print(std::string s, int i) {
-    std::cout << s + std::to_string(i) << std::endl;
-}
-
-void Restaurant::print(std::string s) {
-    std::cout << s << std::endl;
-
 }
 
 void Restaurant::closeRestuarant() {
     open = false;
 }
 
-bool Restaurant::VerifiedMove(std::vector<std::string> words) {
-    if (words.size() != 4) {
-        return false;
-    }
-    for (int i = 1; i < words.size(); ++i) {
-        if (!isNumber(words[i])) {
-            return false;
-        }
-    }
-    return true;
-}
-
-
-bool Restaurant::isNumber(std::string s) {
-    for (int i = 0; i < s.length(); i++)
-        if (!std::isdigit(s[i])) {
-            return false;
-        }
-    return true;
-}
-
-int Restaurant::getTableId(std::vector<std::string> words) {
-    int tableId = 2147483646;  // int max
-    if (words.size() > 1) {
-        tableId = std::stoi(words[1]);
-    }
-    return tableId;
-}
-
-bool Restaurant::verifiedOpen(const std::vector<std::string> words) {
-    return true;
-}
-
-bool Restaurant::verifiedCmdTableNum(std::vector<std::string> words) {
-    if (words.size() != 2) {
-        return false;
-    };
-    return isNumber(words[1]);
-}
 
 Restaurant::Restaurant(const Restaurant &other) {
     // im empty.
@@ -353,6 +264,14 @@ void Restaurant::cleanMySelf() {
     actionsLog.clear();
 }
 
+void Restaurant::createBackup() {
+    backup = new Restaurant(*this);
+}
+
+void Restaurant::restoreFromBackup() {
+
+}
+
 void Restaurant::copyFromOtherIntoMe(const Restaurant &other) {
     nextDishId = other.nextDishId;
     nextCustomerId = other.nextCustomerId;
@@ -386,5 +305,4 @@ void Restaurant::cleanOther(Restaurant &other) {
         other.tables[i] = nullptr;
         // no deleting here
     }
-//    other.customersList.clear();
 }
