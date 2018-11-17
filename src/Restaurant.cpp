@@ -260,8 +260,8 @@ void Restaurant::cleanMySelf() {
     for (int i = 0; i < actionsLog.size(); ++i) {
         delete actionsLog[i];
     }
-    tables.clear();
     actionsLog.clear();
+    menu.clear();
 }
 
 
@@ -269,7 +269,6 @@ void Restaurant::copyFromOtherIntoMe(const Restaurant &other) {
     nextDishId = other.nextDishId;
     nextCustomerId = other.nextCustomerId;
     open = other.open;
-
     // we are generating new tables!
     for (auto table: other.tables) {
         tables.push_back(new Table(*table));
@@ -278,8 +277,12 @@ void Restaurant::copyFromOtherIntoMe(const Restaurant &other) {
     for (auto action: other.actionsLog) {
         actionsLog.push_back(action->clone());
     }
+    for (const auto &dish: other.menu) {
+        menu.push_back(dish);
+    }
 }
 
+//todo:ask joni why isnt it the same logic as here above
 void Restaurant::StealFromOtherToMe(const Restaurant &other) {
     nextDishId = other.nextDishId;
     nextCustomerId = other.nextCustomerId;
@@ -287,9 +290,11 @@ void Restaurant::StealFromOtherToMe(const Restaurant &other) {
     for (auto table : other.tables) {
         tables.push_back(table);
     }
-
     for (auto action: other.actionsLog) {
         actionsLog.push_back(action);
+    }
+    for (const auto &dish: other.menu) {
+        menu.push_back(dish);
     }
 }
 
