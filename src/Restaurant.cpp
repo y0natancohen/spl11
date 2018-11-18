@@ -8,20 +8,19 @@
 #include <vector>
 #include "../include/Restaurant.h"
 
-extern Restaurant *backup;
 
-Restaurant::Restaurant() : nextCustomerId(0), nextDishId(0), open(true) {}
+Restaurant::Restaurant() : nextDishId(0), nextCustomerId(0), open(true) {}
 
 
 //todo:refactor split code
-Restaurant::Restaurant(const std::string &configFilePath) {
-    std::string errMsg = "config file not good";
+Restaurant::Restaurant(const std::string &configFilePath) :
+        nextDishId(0), nextCustomerId(0), open(true) {
     std::vector<std::string> lines = getLines(configFilePath);
     // going over the lines
     int num_of_tables_index = 0;
     int tables_desc_index = 0;
-    int menu_index = 0;
-    for (int i = 0; i < lines.size(); ++i) {
+    unsigned menu_index = 0;
+    for (unsigned i = 0; i < lines.size(); ++i) {
         if (lines[i] == "#number of tables") {
             num_of_tables_index = i + 1;
         }
@@ -36,7 +35,7 @@ Restaurant::Restaurant(const std::string &configFilePath) {
     int num_tables = std::stoi(lines[num_of_tables_index]);
     std::string table_desc_s = lines[tables_desc_index];
     std::vector<std::string> sizes = split(table_desc_s, ',');
-    if (sizes.size() != num_tables) {
+    if ((int) sizes.size() != num_tables) {
         return;
     }
     for (auto size_s: sizes) {
@@ -46,7 +45,7 @@ Restaurant::Restaurant(const std::string &configFilePath) {
     }
     // making the menu
     int tempNextDishId = 0;
-    for (int i = 0; i < lines.size(); ++i) {
+    for (unsigned i = 0; i < lines.size(); ++i) {
         if (i >= menu_index) {  // menu lines
             std::string line = lines[i];
             std::vector<std::string> params = split(line, ',');
@@ -74,10 +73,6 @@ DishType Restaurant::getType(std::string &type_s) {
     } else if (type_s == "BVG") {
         d_type = BVG;
     } else if (type_s == "ALC") {
-        d_type = ALC;
-    } else {
-        // TODO: error here
-        std::cout << "received a bad type: " + type_s << std::endl;
         d_type = ALC;
     }
     return d_type;
@@ -109,9 +104,6 @@ void Restaurant::start() {
             handleCustIds = true; //upon error in open table reset customer id count
             tableId = std::stoi(words[1]);
             initiateCustomersByType(words, customers);
-            //todo:should do ?
-//            std::vector<Customer *>  customersThatKeepsLiving =  this->getTable(tableId)->getCustomers();
-//            action = new OpenTable(tableId, customersThatKeepsLiving);
             action = new OpenTable(tableId, customers);
         } else if (words[0] == "order") { //order from table-id
             tableId = std::stoi(words[1]);
@@ -141,7 +133,7 @@ void Restaurant::start() {
             action->act(*this);
             actionsLog.push_back(action);
             if (action->getStatus() == ERROR && handleCustIds) {
-                handleCustomerIdsGeneration(customers.size());
+                handleCustomerIdsGeneration((int) customers.size());
             }
         }
     }
@@ -149,7 +141,7 @@ void Restaurant::start() {
 
 void Restaurant::initiateCustomersByType(const std::vector<std::string> &words, std::vector<Customer *> &customers) {
     if (words.size() >= 2) {
-        for (int i = 2; i < words.size(); ++i) {
+        for (int i = 2; i < (int) words.size(); ++i) {
             // customer section
             std::string customer = words[i];
             std::vector<std::string> pair = split(customer, ',');
@@ -162,7 +154,7 @@ void Restaurant::initiateCustomersByType(const std::vector<std::string> &words, 
                 customers.push_back(new CheapCustomer(c_name, c_id));
             } else if (c_type == "spc") {
                 customers.push_back(new SpicyCustomer(c_name, c_id));
-            } else if (c_type == "alc") {
+            } else {
                 customers.push_back(new AlchoholicCustomer(c_name, c_id));
             }
         }
@@ -170,11 +162,11 @@ void Restaurant::initiateCustomersByType(const std::vector<std::string> &words, 
 }
 
 int Restaurant::getNumOfTables() const {
-    return tables.size();
+    return (int) tables.size();
 }
 
 Table *Restaurant::getTable(int ind) {
-    if (ind <= tables.size()) {
+    if (ind <= (int) tables.size()) {
         return tables[ind];
     } else {
         return nullptr;
@@ -214,7 +206,6 @@ Restaurant::~Restaurant() {
         delete action;
     }
     actionsLog.clear();
-    std::cout << "Restaurant is now closed!" << std::endl;
 }
 
 void Restaurant::closeRestuarant() {
@@ -261,11 +252,11 @@ Restaurant &Restaurant::operator=(Restaurant &&other) {
 
 
 void Restaurant::cleanMySelf() {
-    for (int i = 0; i < tables.size(); ++i) {
+    for (unsigned i = 0; i < tables.size(); ++i) {
         delete tables[i];
     }
     tables.clear();
-    for (int i = 0; i < actionsLog.size(); ++i) {
+    for (unsigned i = 0; i < actionsLog.size(); ++i) {
         delete actionsLog[i];
     }
     actionsLog.clear();
@@ -307,13 +298,13 @@ void Restaurant::StealFromOtherToMe(const Restaurant &other) {
 }
 
 void Restaurant::cleanOther(Restaurant &other) {
-    for (int i = 0; i < other.tables.size(); ++i) {
+    for (unsigned i = 0; i < other.tables.size(); ++i) {
         other.tables[i] = nullptr;
         // no deleting here
     }
 }
 
-void Restaurant::handleCustomerIdsGeneration(unsigned long sizeToDecrease) {
+void Restaurant::handleCustomerIdsGeneration(int sizeToDecrease) {
     for (int i = 0; i < sizeToDecrease; ++i) {
         nextCustomerId--;
     }

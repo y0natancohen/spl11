@@ -227,15 +227,11 @@ std::vector<int> AlchoholicCustomer::order(const std::vector<Dish> &menu) {
             alcohols.push_back(SortableDish(dish));
         }
     }
-    if (alcohols.size() > 0){
+    if ((alcohols.size() > 0) and ((int) drinksHad < (int) alcohols.size())){
 
         sortByPrice(alcohols);
-        int nth_lowest_price;
-        if (drinksHad >= alcohols.size()){
-            nth_lowest_price = alcohols[alcohols.size() -1].getPrice(); //most expensive
-        }else{
-            nth_lowest_price = alcohols[drinksHad].getPrice(); // nth lowest
-        }
+        int nth_lowest_price = alcohols[drinksHad].getPrice(); //most expensive
+
         std::vector<SortableDish> same_prices;
         for (auto dish: alcohols){
             if (dish.getPrice() == nth_lowest_price){
@@ -245,9 +241,9 @@ std::vector<int> AlchoholicCustomer::order(const std::vector<Dish> &menu) {
         sortById(same_prices);
         result.push_back(same_prices[0].getId());
 
-    }
-    if (result.size() > 0){
-        increaseDrinksHad();
+        if (result.size() > 0){
+            increaseDrinksHad();
+        }
     }
     return result;
 }

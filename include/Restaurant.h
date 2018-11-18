@@ -7,7 +7,6 @@
 #include "Table.h"
 #include "Action.h"
 
-extern Restaurant *backup;
 class Restaurant{
 public:
     Restaurant();
@@ -20,8 +19,6 @@ public:
     void cleanOther(Restaurant &other);
     void StealFromOtherToMe(const Restaurant &other);
     void copyFromOtherIntoMe(const Restaurant &other);
-    void createBackup();
-    void restoreFromBackup();
     void cleanMySelf();
     void start();
     int getNumOfTables() const;
@@ -36,14 +33,14 @@ public:
     void initiateCustomersByType(const std::vector<std::string> &words, std::vector<Customer *> &customers);
 
 private:
-    int nextDishId = 0;
-    int nextCustomerId = 0;
+    int nextDishId;
+    int nextCustomerId;
     bool open;
     std::vector<Table*> tables;
     std::vector<Dish> menu;
     std::vector<BaseAction*> actionsLog;
 
-    void handleCustomerIdsGeneration(unsigned long size);
+    void handleCustomerIdsGeneration(int size);
 };
 
 #endif

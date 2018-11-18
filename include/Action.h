@@ -15,7 +15,13 @@ class Restaurant;
 class BaseAction {
 public:
     BaseAction();
+
+    BaseAction(const BaseAction &other);
+
+    std::string endOfToString(ActionStatus actionStatus, std::string errMsg) const;
+
     virtual ~BaseAction();
+
     ActionStatus getStatus() const;
 
     virtual void act(Restaurant &restaurant) = 0;
@@ -43,11 +49,16 @@ class OpenTable : public BaseAction {
 public:
     OpenTable(int id, std::vector<Customer *> &customersList);
 
+    OpenTable(const OpenTable &other);
+
     void act(Restaurant &restaurant);
+
     std::string toString() const;
+
     BaseAction *clone();
 
     ~OpenTable();
+
 private:
     const int tableId;
     std::vector<Customer *> customers; // this supposed to point to Table.customers
@@ -60,7 +71,9 @@ public:
     void act(Restaurant &restaurant);
 
     std::string toString() const;
+
     BaseAction *clone();
+
 private:
     const int tableId;
 };
@@ -69,10 +82,13 @@ private:
 class MoveCustomer : public BaseAction {
 public:
     MoveCustomer(int src, int dst, int customerId);
+
     void act(Restaurant &restaurant);
 
     std::string toString() const;
+
     BaseAction *clone();
+
 private:
     const int srcTable;
     const int dstTable;
@@ -83,10 +99,13 @@ private:
 class Close : public BaseAction {
 public:
     Close(int id);
+
     void act(Restaurant &restaurant);
 
     std::string toString() const;
+
     BaseAction *clone();
+
 private:
     const int tableId;
 };
@@ -99,6 +118,7 @@ public:
     void act(Restaurant &restaurant);
 
     std::string toString() const;
+
     BaseAction *clone();
 
 private:
@@ -110,10 +130,13 @@ public:
     PrintMenu();
 
     void act(Restaurant &restaurant);
+
     std::string getTypeString(DishType t);
 
     std::string toString() const;
+
     BaseAction *clone();
+
 private:
 };
 
@@ -125,7 +148,9 @@ public:
     void act(Restaurant &restaurant);
 
     std::string toString() const;
+
     BaseAction *clone();
+
 private:
     const int tableId;
 };
@@ -138,7 +163,9 @@ public:
     void act(Restaurant &restaurant);
 
     std::string toString() const;
+
     BaseAction *clone();
+
 private:
 };
 
@@ -150,7 +177,9 @@ public:
     void act(Restaurant &restaurant);
 
     std::string toString() const;
+
     BaseAction *clone();
+
 private:
 };
 
@@ -158,9 +187,11 @@ private:
 class RestoreResturant : public BaseAction {
 public:
     RestoreResturant();
+
     void act(Restaurant &restaurant);
 
     std::string toString() const;
+
     BaseAction *clone();
 };
 

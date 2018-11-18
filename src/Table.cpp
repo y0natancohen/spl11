@@ -20,7 +20,7 @@ void Table::addCustomer(Customer *customer) {
 
 void Table::removeCustomer(int id) {
     // this does not delete
-    for (int i = 0; i < customersList.size(); ++i) {
+    for (unsigned i = 0; i < customersList.size(); ++i) {
         if (customersList[i]->getId() == id) {
 
 //            delete customersList[i]; // DO NOT DELETE HERE! move customer is using it
@@ -31,7 +31,7 @@ void Table::removeCustomer(int id) {
 }
 
 Customer *Table::getCustomer(int id) {
-    for (int i = 0; i < customersList.size(); ++i) {
+    for (unsigned i = 0; i < customersList.size(); ++i) {
         if (customersList[i]->getId() == id) {
             return customersList[i];
         }
@@ -67,6 +67,7 @@ Dish Table::getDish(const std::vector<Dish> &menu, int d_id) {
             return dish;
         }
     }
+    return Dish(1,"1",1,BVG); // should never reach here
 }
 
 void Table::openTable() {
@@ -118,7 +119,7 @@ void Table::addOrders(std::vector<OrderPair> orders) {
 void Table::removeCustomerOrders(int id) {
     std::vector<int> keppIndexes;
     std::vector<OrderPair> tempList;
-    for (int i = 0; i < orderList.size(); ++i) {
+    for (unsigned i = 0; i < orderList.size(); ++i) {
         if (orderList[i].first != id) {
             keppIndexes.push_back(i);
         }
@@ -128,7 +129,7 @@ void Table::removeCustomerOrders(int id) {
 //        orderList.erase(orderList.begin() + i);
     }
     orderList.clear();
-    for (int j = 0; j < tempList.size(); ++j) {
+    for (unsigned j = 0; j < tempList.size(); ++j) {
         orderList.push_back(tempList[j]);
     }
 }
@@ -172,7 +173,7 @@ Table &Table::operator=(Table &&other) {
 }
 
 void Table::cleanMySelf() {
-    for (int i = 0; i < customersList.size(); ++i) {
+    for (unsigned i = 0; i < customersList.size(); ++i) {
         delete customersList[i];
     }
     customersList.clear();
@@ -205,7 +206,7 @@ void Table::StealFromOtherToMe(const Table &other) {
 }
 
 void Table::cleanOther(Table &other) {
-    for (int i = 0; i < other.customersList.size(); ++i) {
+    for (unsigned i = 0; i < other.customersList.size(); ++i) {
         other.customersList[i] = nullptr;
         // no deleting here
     }
