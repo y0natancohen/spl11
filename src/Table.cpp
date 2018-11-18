@@ -116,15 +116,20 @@ void Table::addOrders(std::vector<OrderPair> orders) {
 }
 
 void Table::removeCustomerOrders(int id) {
-    std::vector<int> removeIndexes;
+    std::vector<int> keppIndexes;
+    std::vector<OrderPair> tempList;
     for (int i = 0; i < orderList.size(); ++i) {
-        if (orderList[i].first == id) {
-            removeIndexes.push_back(i);
+        if (orderList[i].first != id) {
+            keppIndexes.push_back(i);
         }
     }
-
-    for (auto i: removeIndexes) {
-        orderList.erase(orderList.begin() + i);
+    for (auto i: keppIndexes) {
+        tempList.push_back(orderList[i]);
+//        orderList.erase(orderList.begin() + i);
+    }
+    orderList.clear();
+    for (int j = 0; j < tempList.size(); ++j) {
+        orderList.push_back(tempList[j]);
     }
 }
 

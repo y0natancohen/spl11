@@ -88,7 +88,6 @@ CheapCustomer::CheapCustomer(std::string name, int id) :
 std::vector<int> CheapCustomer::order(const std::vector<Dish> &menu) {
     // cheapest dish in the menu
 //    int dish = getCorrectId(menu, BVG, 0, false, true);
-    std::cout << "cheap ordering"<< std::endl;
     std::vector<int> result;
     if (menu.size() <=  0){
         return result;
@@ -134,7 +133,6 @@ SpicyCustomer::SpicyCustomer(std::string name, int id) :
 }
 
 std::vector<int> SpicyCustomer::order(const std::vector<Dish> &menu) {
-    std::cout << "spicy ordering"<< std::endl;
     std::vector<int> result;
     if (menu.size() <=  0){
         return result;
@@ -215,7 +213,6 @@ AlchoholicCustomer::AlchoholicCustomer(std::string name, int id) :
 }
 
 std::vector<int> AlchoholicCustomer::order(const std::vector<Dish> &menu) {
-    std::cout << "alcoholic ordering"<< std::endl;
 
     // nth cheapest alcoholic
 //    int dish = getCorrectId(menu, ALC, getDrinksHad(), false, false);

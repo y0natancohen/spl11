@@ -123,9 +123,15 @@ OpenTable::OpenTable(int id, std::vector<Customer *> &customersList) : tableId(i
 
 std::string OpenTable::toString() const {
     std::string msg = "open " + std::to_string(tableId) + " ";
+    bool deleteLastSpace = false;
     for (const auto &customer : customers) {
         msg += customer->getName() + ",";
         msg += customer->getType();
+        msg +=" ";
+        deleteLastSpace = true;
+    }
+    if(deleteLastSpace){
+        msg = msg.substr(0, msg.size()-1);
     }
     if (getStatus() == ERROR) {
         msg += " " + getErrorMsg();
