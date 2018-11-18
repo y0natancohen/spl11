@@ -42,6 +42,8 @@ private:
     std::vector<Table*> tables;
     std::vector<Dish> menu;
     std::vector<BaseAction*> actionsLog;
+
+    void handleCustomerIdsGeneration(unsigned long size);
 };
 
 #endif

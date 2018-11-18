@@ -97,21 +97,21 @@ void Restaurant::start() {
         // assuming input is the correct format for each command!!
         // as described in assignment page
         BaseAction *action = nullptr;
+        bool handleCustIds = false;
         std::string cmd;
         std::getline(std::cin, cmd);
         std::vector<std::string> words = split(cmd, ' ');
-        int tableId = -1;
+        int tableId;
+        std::vector<Customer *> customers;
         if (words[0] == "closeall") { //close all
             action = new CloseAll();
         } else if (words[0] == "open") { //open table
+            handleCustIds = true; //upon error in open table reset customer id count
             tableId = std::stoi(words[1]);
-            std::vector<Customer *> customers;
             initiateCustomersByType(words, customers);
-
             //todo:should do ?
 //            std::vector<Customer *>  customersThatKeepsLiving =  this->getTable(tableId)->getCustomers();
 //            action = new OpenTable(tableId, customersThatKeepsLiving);
-
             action = new OpenTable(tableId, customers);
         } else if (words[0] == "order") { //order from table-id
             tableId = std::stoi(words[1]);
@@ -140,6 +140,9 @@ void Restaurant::start() {
             // BaseAction destructor and its derivatives should clean memory mass here
             action->act(*this);
             actionsLog.push_back(action);
+            if (action->getStatus() == ERROR && handleCustIds) {
+                handleCustomerIdsGeneration(customers.size());
+            }
         }
     }
 }
@@ -307,5 +310,11 @@ void Restaurant::cleanOther(Restaurant &other) {
     for (int i = 0; i < other.tables.size(); ++i) {
         other.tables[i] = nullptr;
         // no deleting here
+    }
+}
+
+void Restaurant::handleCustomerIdsGeneration(unsigned long sizeToDecrease) {
+    for (int i = 0; i < sizeToDecrease; ++i) {
+        nextCustomerId--;
     }
 }

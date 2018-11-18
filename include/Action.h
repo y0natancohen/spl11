@@ -44,7 +44,6 @@ public:
     OpenTable(int id, std::vector<Customer *> &customersList);
 
     void act(Restaurant &restaurant);
-
     std::string toString() const;
     BaseAction *clone();
 
