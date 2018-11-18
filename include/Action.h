@@ -109,6 +109,7 @@ public:
     PrintMenu();
 
     void act(Restaurant &restaurant);
+    std::string getTypeString(DishType t);
 
     std::string toString() const;
     BaseAction *clone();

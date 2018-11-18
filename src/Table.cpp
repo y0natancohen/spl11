@@ -15,13 +15,15 @@ int Table::getCapacity() const {
 }
 
 void Table::addCustomer(Customer *customer) {
-    customersList.push_back(customer->clone());
+    customersList.push_back(customer);
 }
 
 void Table::removeCustomer(int id) {
     // this does not delete
     for (int i = 0; i < customersList.size(); ++i) {
         if (customersList[i]->getId() == id) {
+
+//            delete customersList[i]; // DO NOT DELETE HERE! move customer is using it
             customersList.erase(customersList.begin() + i);
             break;
         }
@@ -72,6 +74,7 @@ void Table::openTable() {
 }
 
 void Table::closeTable() {
+    cleanMySelf();
     open = false;
 }
 
@@ -113,10 +116,15 @@ void Table::addOrders(std::vector<OrderPair> orders) {
 }
 
 void Table::removeCustomerOrders(int id) {
+    std::vector<int> removeIndexes;
     for (int i = 0; i < orderList.size(); ++i) {
         if (orderList[i].first == id) {
-            orderList.erase(orderList.begin() + i);
+            removeIndexes.push_back(i);
         }
+    }
+
+    for (auto i: removeIndexes) {
+        orderList.erase(orderList.begin() + i);
     }
 }
 

@@ -20,6 +20,7 @@ ActionStatus BaseAction::getStatus() const {
 void BaseAction::error(std::string errorMsg) {
     std::string msg = "Error: " + errorMsg;
     status = ERROR;
+    std::cout << msg << std::endl;
     this->errorMsg = msg;
 }
 
@@ -85,6 +86,7 @@ void Close::act(Restaurant &restaurant) {
     int bill = table->getBill();
     std::string msg = "Table " + std::to_string(tableId) +
                       " was closed. Bill " + std::to_string(bill) + "NIS";
+    std::cout << msg << std::endl;
     table->closeTable();
     complete();
 }
@@ -135,7 +137,8 @@ void OpenTable::act(Restaurant &restaurant) {
     }
     for (auto customer : customers) {
         // no need to verify capacity - forum
-        table->addCustomer(customer);
+        // open table is managing its own memory from here
+        table->addCustomer(customer->clone());
     }
     table->openTable();
     complete();
@@ -212,6 +215,7 @@ void PrintActionsLog::act(Restaurant &restaurant) {
 }
 
 
+
 PrintActionsLog::PrintActionsLog() {}
 
 BaseAction *PrintActionsLog::clone() {
@@ -227,23 +231,30 @@ std::string PrintTableStatus::toString() const {
 
 void PrintTableStatus::act(Restaurant &restaurant) {
     Table *table = restaurant.getTable(tableId);
-    std::string currentStatus = table->isOpen() == 1 ? " open" : " close";
+    std::string currentStatus;
+    if (!table->isOpen()) {
+        currentStatus = " closed";
+    } else {
+        currentStatus = " open";
+    }
     std::string status =
             "Table " + std::to_string(tableId) + " status:" + currentStatus;
     std::cout << status << std::endl;
-    std::cout << "Customers:" << std::endl;
-    for (const auto &customer : table->getCustomers()) {
-        //todo:elad move to toString of Customer
-        std::string cust = std::to_string(customer->getId()) + " " + customer->getName();
-        std::cout << cust << std::endl;
+    if (table->isOpen()) {
+        std::cout << "Customers:" << std::endl;
+        for (const auto &customer : table->getCustomers()) {
+            //todo:elad move to toString of Customer
+            std::string cust = std::to_string(customer->getId()) + " " + customer->getName();
+            std::cout << cust << std::endl;
+        }
+        std::cout << "Orders:" << std::endl;
+        for (const auto &orderPair : table->getOrders()) {
+            std::string dish = orderPair.second.getName() + " " + std::to_string(orderPair.second.getPrice()) + "NIS " +
+                               std::to_string(orderPair.first);
+            std::cout << dish << std::endl;
+        }
+        std::cout << "Current Bill:" + std::to_string(table->getBill()) + "NIS" << std::endl;
     }
-    std::cout << "Orders:" << std::endl;
-    for (const auto &orderPair : table->getOrders()) {
-        std::string dish = orderPair.second.getName() + " " + std::to_string(orderPair.second.getPrice()) + " " +
-                           std::to_string(orderPair.first);
-        std::cout << dish << std::endl;
-    }
-    std::cout << "Current Bill:" + std::to_string(table->getBill()) << std::endl;
     complete();
 }
 
@@ -265,10 +276,23 @@ void PrintMenu::act(Restaurant &restaurant) {
     //todo: figure out how to fetch enum val instead of id
     for (const auto &dish : restaurant.getMenu()) {
         std::string msg =
-                dish.getName() + " " + std::to_string(dish.getType()) + " " + std::to_string(dish.getPrice()) + "NIS";
+                dish.getName() + " " + getTypeString(dish.getType()) + " " + std::to_string(dish.getPrice()) + "NIS";
         std::cout << msg << std::endl;
     }
     complete();
+}
+
+
+std::string PrintMenu::getTypeString(DishType t) {
+    if (t == VEG) {
+        return "VEG";
+    } else if (t == SPC) {
+        return "SPC";
+    } else if (t == BVG) {
+        return "BVG";
+    } else if (t == ALC) {
+        return "ALC";
+    }
 }
 
 
@@ -344,9 +368,7 @@ void MoveCustomer::act(Restaurant &restaurant) {
     source->removeCustomerOrders(id);
     dest->addOrders(customerOrders);
     if (source->getCustomers().empty()) { // table is empty
-        Close closeActionInstance = Close(srcTable);
-        closeActionInstance.act(restaurant);
-
+        source->closeTable();
     }
     complete();
 }

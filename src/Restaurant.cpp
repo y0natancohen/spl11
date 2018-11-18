@@ -107,6 +107,11 @@ void Restaurant::start() {
             tableId = std::stoi(words[1]);
             std::vector<Customer *> customers;
             initiateCustomersByType(words, customers);
+
+            //todo:should do ?
+//            std::vector<Customer *>  customersThatKeepsLiving =  this->getTable(tableId)->getCustomers();
+//            action = new OpenTable(tableId, customersThatKeepsLiving);
+
             action = new OpenTable(tableId, customers);
         } else if (words[0] == "order") { //order from table-id
             tableId = std::stoi(words[1]);
@@ -122,6 +127,7 @@ void Restaurant::start() {
         } else if (words[0] == "menu") { //print menu
             action = new PrintMenu();
         } else if (words[0] == "status") {
+            tableId = std::stoi(words[1]);
             action = new PrintTableStatus(tableId);
         } else if (words[0] == "log") {
             action = new PrintActionsLog();
@@ -133,7 +139,7 @@ void Restaurant::start() {
         if (action != nullptr) {
             // BaseAction destructor and its derivatives should clean memory mass here
             action->act(*this);
-            actionsLog.push_back(action->clone());
+            actionsLog.push_back(action);
         }
     }
 }
