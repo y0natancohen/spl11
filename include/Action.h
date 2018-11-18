@@ -24,6 +24,8 @@ public:
 
     virtual BaseAction *clone() = 0;
 
+    std::string getStatusValue(ActionStatus actionStatus) const;
+
 protected:
 
     void complete();

@@ -75,6 +75,10 @@ Customer *VegetarianCustomer::clone() {
     return new VegetarianCustomer(*this);
 }
 
+std::string VegetarianCustomer::getType() {
+    return "veg";
+}
+
 // CHEAP
 
 
@@ -114,6 +118,10 @@ std::string CheapCustomer::toString() const {
 
 Customer *CheapCustomer::clone() {
     return new CheapCustomer(*this);
+}
+
+std::string CheapCustomer::getType() {
+    return "chp";
 }
 
 
@@ -194,6 +202,10 @@ Customer *SpicyCustomer::clone() {
     return new SpicyCustomer(*this);
 }
 
+std::string SpicyCustomer::getType() {
+    return "spc";
+}
+
 
 // ALCOHOL
 
@@ -257,6 +269,10 @@ void AlchoholicCustomer::increaseDrinksHad() {
 
 Customer *AlchoholicCustomer::clone() {
     return new AlchoholicCustomer(*this);
+}
+
+std::string AlchoholicCustomer::getType() {
+    return "alc";
 }
 
 void Customer::sortById(std::vector<SortableDish> &vec) {

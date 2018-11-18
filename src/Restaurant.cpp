@@ -146,10 +146,9 @@ void Restaurant::start() {
 
 void Restaurant::initiateCustomersByType(const std::vector<std::string> &words, std::vector<Customer *> &customers) {
     if (words.size() >= 2) {
-        std::vector<std::string> customersInPairs = split(words[2], ' ');
-        for (int i = 0; i < customersInPairs.size(); ++i) {
+        for (int i = 2; i < words.size(); ++i) {
             // customer section
-            std::string customer = customersInPairs[i];
+            std::string customer = words[i];
             std::vector<std::string> pair = split(customer, ',');
             std::string c_name = pair[0];
             std::string c_type = pair[1];
