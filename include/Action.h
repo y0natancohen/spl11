@@ -105,8 +105,11 @@ public:
     std::string toString() const;
 
     BaseAction *clone();
+    bool isFinalClose();
+    void setfinalClose(bool newState);
 
 private:
+    bool finalClose;
     const int tableId;
 };
 

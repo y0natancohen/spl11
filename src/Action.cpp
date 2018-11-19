@@ -89,7 +89,7 @@ BaseAction *Order::clone() {
 
 // close table
 
-Close::Close(int id) : tableId(id) {
+Close::Close(int id) : finalClose(false), tableId(id) {
 
 }
 
@@ -106,7 +106,11 @@ void Close::act(Restaurant &restaurant) {
     int bill = table->getBill();
     std::string msg = "Table " + std::to_string(tableId) +
                       " was closed. Bill " + std::to_string(bill) + "NIS";
-    std::cout << msg << std::endl;
+    if (isFinalClose()) {
+        std::cout << msg;
+    } else {
+        std::cout << msg << std::endl;
+    }
     table->closeTable();
     complete();
 }
@@ -118,6 +122,14 @@ std::string Close::toString() const {
 
 BaseAction *Close::clone() {
     return new Close(*this);
+}
+
+bool Close::isFinalClose() {
+    return finalClose;
+}
+
+void Close::setfinalClose(bool newState) {
+    finalClose = newState;
 }
 
 
@@ -263,31 +275,33 @@ std::string PrintTableStatus::toString() const {
 
 void PrintTableStatus::act(Restaurant &restaurant) {
     Table *table = restaurant.getTable(tableId);
-    std::string currentStatus;
-    if (!table->isOpen()) {
-        currentStatus = " closed";
-    } else {
-        currentStatus = " open";
-    }
-    std::string status =
-            "Table " + std::to_string(tableId) + " status:" + currentStatus;
-    std::cout << status << std::endl;
-    if (table->isOpen()) {
-        std::cout << "Customers:" << std::endl;
-        for (const auto &customer : table->getCustomers()) {
-            //todo:elad move to toString of Customer
-            std::string cust = std::to_string(customer->getId()) + " " + customer->getName();
-            std::cout << cust << std::endl;
+    if (table != nullptr) {
+        std::string currentStatus;
+        if (!table->isOpen()) {
+            currentStatus = " closed";
+        } else {
+            currentStatus = " open";
         }
-        std::cout << "Orders:" << std::endl;
-        for (const auto &orderPair : table->getOrders()) {
-            std::string dish = orderPair.second.getName() + " " + std::to_string(orderPair.second.getPrice()) + "NIS " +
-                               std::to_string(orderPair.first);
-            std::cout << dish << std::endl;
+        std::string status =
+                "Table " + std::to_string(tableId) + " status:" + currentStatus;
+        std::cout << status << std::endl;
+        if (table->isOpen()) {
+            std::cout << "Customers:" << std::endl;
+            for (const auto &customer : table->getCustomers()) {
+                std::string cust = std::to_string(customer->getId()) + " " + customer->getName();
+                std::cout << cust << std::endl;
+            }
+            std::cout << "Orders:" << std::endl;
+            for (const auto &orderPair : table->getOrders()) {
+                std::string dish =
+                        orderPair.second.getName() + " " + std::to_string(orderPair.second.getPrice()) + "NIS " +
+                        std::to_string(orderPair.first);
+                std::cout << dish << std::endl;
+            }
+            std::cout << "Current Bill: " + std::to_string(table->getBill()) + "NIS" << std::endl;
         }
-        std::cout << "Current Bill: " + std::to_string(table->getBill()) + "NIS" << std::endl;
+        complete();
     }
-    complete();
 }
 
 PrintTableStatus::PrintTableStatus(int id) : tableId(id) {
@@ -340,13 +354,22 @@ std::string CloseAll::toString() const {
 }
 
 void CloseAll::act(Restaurant &restaurant) {
-    for (int i = 0; i < restaurant.getNumOfTables() - 1; i++) {
+    std::vector<int> openTables;
+    for (int i = 0; i < restaurant.getNumOfTables(); i++) {
         Table *t = restaurant.getTable(i);
         if (t->isOpen()) {
-            Close *closeAct = new Close(i);
-            closeAct->act(restaurant);
-            delete closeAct;
+            openTables.push_back(i);
         }
+    }
+    unsigned counter=0;
+    for(auto tableId: openTables){
+        counter++;
+        Close *closeAct = new Close(tableId);
+        if (counter == openTables.size()) { // is last
+            closeAct->setfinalClose(true);
+        }
+        closeAct->act(restaurant);
+        delete closeAct;
     }
     restaurant.closeRestuarant();
     complete();
@@ -398,10 +421,6 @@ void MoveCustomer::act(Restaurant &restaurant) {
     if (source->getCustomers().empty()) { // table is empty
         source->closeTable();
     }
-//    source = nullptr;
-//    dest = nullptr;
-//    mover = nullptr;
-
     complete();
 }
 
