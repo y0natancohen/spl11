@@ -1,7 +1,3 @@
-//
-// Created by yonatan on 11/10/18.
-//
-
 #include "../include/Dish.h"
 #include "../include/SortableDish.h"
 

@@ -1,6 +1,3 @@
-//
-// Created by yonatan on 11/8/18.
-//
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -12,7 +9,6 @@
 Restaurant::Restaurant() : nextCustomerId(0), open(true) {}
 
 
-//todo:refactor split code
 Restaurant::Restaurant(const std::string &configFilePath) :
         nextCustomerId(0), open(true) {
     std::vector<std::string> lines = getLines(configFilePath);
@@ -47,8 +43,6 @@ Restaurant::Restaurant(const std::string &configFilePath) :
         menu.push_back(Dish(d_id, d_name, d_price, d_type));
         ++tempNextDishId;
     }
-    //important
-    //
     open = true;
 }
 
@@ -138,7 +132,6 @@ void Restaurant::cleanTempCustomers(std::vector<Customer *> &customers) {
 void Restaurant::initiateCustomersByType(const std::vector<std::string> &words, std::vector<Customer *> &customers) {
     if (words.size() >= 2) {
         for (int i = 2; i < (int) words.size(); ++i) {
-            // customer section
             std::string customer = words[i];
             std::vector<std::string> pair = split(customer, ',');
             std::string c_name = pair[0];

@@ -1,7 +1,3 @@
-//
-// Created by yonatan on 11/8/18.
-//
-
 #include "../include/Action.h"
 #include "../include/Table.h"
 #include "../include/Restaurant.h"
@@ -32,10 +28,6 @@ void BaseAction::complete() {
 
 std::string BaseAction::getErrorMsg() const {
     return errorMsg;
-}
-
-BaseAction::~BaseAction() {
-
 }
 
 std::string BaseAction::getStatusValue(ActionStatus actionStatus) const {
@@ -78,6 +70,8 @@ std::string BaseAction::endOfToString(ActionStatus actionStatus,
     return " " + getStatusValue(actionStatus);
 }
 
+BaseAction::~BaseAction() {}
+
 std::string Order::toString() const {
     std::string s = "order " + std::to_string(tableId)
                     + endOfToString(getStatus(), getErrorMsg());
@@ -91,9 +85,6 @@ BaseAction *Order::clone() {
 
 // close table
 
-Close::Close(int id) : finalClose(false), tableId(id) {
-
-}
 
 void Close::act(Restaurant &restaurant) {
     Table *table = restaurant.getTable(tableId);
@@ -108,11 +99,7 @@ void Close::act(Restaurant &restaurant) {
     int bill = table->getBill();
     std::string msg = "Table " + std::to_string(tableId) +
                       " was closed. Bill " + std::to_string(bill) + "NIS";
-    if (isFinalClose()) {
-        std::cout << msg;
-    } else {
-        std::cout << msg << std::endl;
-    }
+    std::cout << msg << std::endl;
     table->closeTable();
     complete();
 }
@@ -126,13 +113,7 @@ BaseAction *Close::clone() {
     return new Close(*this);
 }
 
-bool Close::isFinalClose() {
-    return finalClose;
-}
-
-void Close::setfinalClose(bool newState) {
-    finalClose = newState;
-}
+Close::Close(int id): tableId(id) {}
 
 
 //open table
@@ -142,14 +123,12 @@ OpenTable::OpenTable(int id, std::vector<Customer *> &customersList) : tableId(i
     }
 }
 
-//todo: cut last char
 
 std::string OpenTable::toString() const {
     std::string msg = "open " + std::to_string(tableId) + " ";
     bool deleteLastSpace = false;
     for (const auto &customer : customers) {
-        msg += customer->getName() + ",";
-        msg += customer->getType();
+        msg += customer->toString();
         msg += " ";
         deleteLastSpace = true;
     }
@@ -193,11 +172,31 @@ OpenTable::~OpenTable() {
     }
 }
 
-OpenTable::OpenTable(const OpenTable &other) :
-        BaseAction(other), tableId(other.tableId) {
+OpenTable::OpenTable(const OpenTable &other) : BaseAction(other), tableId(other.tableId) {
 
     for (auto customer: other.customers) {
         customers.push_back(customer->clone());
+    }
+}
+
+OpenTable::OpenTable(OpenTable &&other) : tableId(other.tableId) {
+    // im empty.
+    // other will disappear and im stealing everything
+    StealFromOtherToMe(other);
+    cleanOther(other);
+}
+
+
+void OpenTable::StealFromOtherToMe(const OpenTable &other) {
+    for (auto customer : other.customers) {
+        customers.push_back(customer);
+    }
+}
+
+void OpenTable::cleanOther(OpenTable &other) {
+    for (unsigned i = 0; i < other.customers.size(); ++i) {
+        other.customers[i] = nullptr;
+        // no deleting here
     }
 }
 
@@ -321,7 +320,6 @@ std::string PrintMenu::toString() const {
 }
 
 void PrintMenu::act(Restaurant &restaurant) {
-    //todo: figure out how to fetch enum val instead of id
     for (const auto &dish : restaurant.getMenu()) {
         std::string msg =
                 dish.getName() + " " + getTypeString(dish.getType()) + " " + std::to_string(dish.getPrice()) + "NIS";

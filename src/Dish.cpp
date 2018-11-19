@@ -1,7 +1,3 @@
-//
-// Created by yonatan on 11/8/18.
-//
-
 #include "../include/Dish.h"
 
 Dish::Dish(int d_id, std::string d_name, int d_price, DishType d_type):
@@ -23,16 +19,6 @@ int Dish::getPrice() const {
 DishType Dish::getType() const {
     return type;
 }
-
-Dish &Dish::operator=(Dish &&) {
-    return *this;
-}
-
-Dish::Dish(const Dish &other): id(other.getId()),
-                            name(other.getName()),
-                            price(other.getPrice()),
-                            type(other.getType())
-{}
 
 
 

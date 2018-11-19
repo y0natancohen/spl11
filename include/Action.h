@@ -17,10 +17,9 @@ public:
     BaseAction();
 
     BaseAction(const BaseAction &other);
+    virtual ~BaseAction(); // warnings without this
 
     std::string endOfToString(ActionStatus actionStatus, std::string errMsg) const;
-
-    virtual ~BaseAction();
 
     ActionStatus getStatus() const;
 
@@ -48,8 +47,10 @@ private:
 class OpenTable : public BaseAction {
 public:
     OpenTable(int id, std::vector<Customer *> &customersList);
-
     OpenTable(const OpenTable &other);
+    OpenTable(OpenTable &&other);
+    ~OpenTable();
+    // const tableId so no assignments here
 
     void act(Restaurant &restaurant);
 
@@ -57,11 +58,13 @@ public:
 
     BaseAction *clone();
 
-    ~OpenTable();
 
 private:
     const int tableId;
-    std::vector<Customer *> customers; // this supposed to point to Table.customers
+    std::vector<Customer *> customers;
+
+    void StealFromOtherToMe(const OpenTable &other);
+    void cleanOther(OpenTable &other);
 };
 
 class Order : public BaseAction {
@@ -105,11 +108,8 @@ public:
     std::string toString() const;
 
     BaseAction *clone();
-    bool isFinalClose();
-    void setfinalClose(bool newState);
 
 private:
-    bool finalClose;
     const int tableId;
 };
 

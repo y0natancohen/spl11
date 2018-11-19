@@ -1,6 +1,3 @@
-//
-// Created by yonatan on 11/8/18.
-//
 #include <iostream>
 #include <algorithm>
 #include "../include/Customer.h"
@@ -67,7 +64,7 @@ std::vector<int> VegetarianCustomer::order(const std::vector<Dish> &menu) {
 
 
 std::string VegetarianCustomer::toString() const {
-    return getName();
+    return getName() + "," + getType();
 }
 
 
@@ -75,7 +72,7 @@ Customer *VegetarianCustomer::clone() {
     return new VegetarianCustomer(*this);
 }
 
-std::string VegetarianCustomer::getType() {
+std::string VegetarianCustomer::getType() const{
     return "veg";
 }
 
@@ -87,7 +84,6 @@ CheapCustomer::CheapCustomer(std::string name, int id) :
 
 std::vector<int> CheapCustomer::order(const std::vector<Dish> &menu) {
     // cheapest dish in the menu
-//    int dish = getCorrectId(menu, BVG, 0, false, true);
     std::vector<int> result;
     if (not hasOrdered()) {
         if (menu.size() <= 0) {
@@ -115,14 +111,14 @@ std::vector<int> CheapCustomer::order(const std::vector<Dish> &menu) {
 }
 
 std::string CheapCustomer::toString() const {
-    return getName();
+    return getName() + "," + getType();
 }
 
 Customer *CheapCustomer::clone() {
     return new CheapCustomer(*this);
 }
 
-std::string CheapCustomer::getType() {
+std::string CheapCustomer::getType() const {
     return "chp";
 }
 
@@ -195,7 +191,7 @@ std::vector<int> SpicyCustomer::order(const std::vector<Dish> &menu) {
 }
 
 std::string SpicyCustomer::toString() const {
-    return getName();
+    return getName() + "," + getType();
 }
 
 bool SpicyCustomer::hasOrdered() {
@@ -211,7 +207,7 @@ Customer *SpicyCustomer::clone() {
     return new SpicyCustomer(*this);
 }
 
-std::string SpicyCustomer::getType() {
+std::string SpicyCustomer::getType() const {
     return "spc";
 }
 
@@ -226,7 +222,6 @@ AlchoholicCustomer::AlchoholicCustomer(std::string name, int id) :
 std::vector<int> AlchoholicCustomer::order(const std::vector<Dish> &menu) {
 
     // nth cheapest alcoholic
-//    int dish = getCorrectId(menu, ALC, getDrinksHad(), false, false);
     std::vector<int> result;
     if (menu.size() <= 0) {
         return result;
@@ -251,12 +246,9 @@ std::vector<int> AlchoholicCustomer::order(const std::vector<Dish> &menu) {
 }
 
 std::string AlchoholicCustomer::toString() const {
-    return getName();
+    return getName() + "," + getType();
 }
 
-int AlchoholicCustomer::getDrinksHad() {
-    return numberOfDrinksHad;
-}
 
 void AlchoholicCustomer::increaseDrinksHad() {
     ++numberOfDrinksHad;
@@ -266,7 +258,7 @@ Customer *AlchoholicCustomer::clone() {
     return new AlchoholicCustomer(*this);
 }
 
-std::string AlchoholicCustomer::getType() {
+std::string AlchoholicCustomer::getType() const {
     return "alc";
 }
 
@@ -289,10 +281,6 @@ void Customer::sortByPrice(std::vector<SortableDish> &vec) {
     );
 }
 
-
-Customer::~Customer() {
-
-}
-
+Customer::~Customer() {}
 
 

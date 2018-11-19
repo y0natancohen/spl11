@@ -14,11 +14,12 @@ public:
     Table& operator=(const Table &other); //copy ass op
     Table(Table &&other); // move con
     Table& operator=(Table &&other); // move ass op
+    virtual ~Table();
+
     void cleanMySelf();
     void cleanOther(Table &other);
     void copyFromOtherIntoMe(const Table &other);
     void StealFromOtherToMe(const Table &other);
-    virtual ~Table();
 
 
     int getCapacity() const;
@@ -36,15 +37,12 @@ public:
     int getBill();
     bool isOpen();
     Dish getDish(const std::vector<Dish> &menu, int d_id);
-    void clearCustomers();
 
 private:
     int capacity;
     bool open;
     std::vector<Customer*> customersList;
-    std::vector<OrderPair> orderList;
-    //  (  customer_id , Dish  )
-    // A list of pairs for each order in a table
+    std::vector<OrderPair> orderList; //A list of pairs for each order in a table - (customer_id, Dish)
 };
 
 

@@ -1,7 +1,3 @@
-//
-// Created by yonatan on 11/10/18.
-//
-
 #ifndef UNTITLED_SORTABLEDISH_H
 #define UNTITLED_SORTABLEDISH_H
 #include "Dish.h"
@@ -21,5 +17,4 @@ private:
     DishType type;
 };
 
-#endif //UNTITLED_SORTABLEDISH_H
-
+#endif

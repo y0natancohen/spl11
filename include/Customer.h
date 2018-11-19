@@ -8,13 +8,12 @@
 
 class Customer{
 public:
-    virtual ~Customer();
     Customer(std::string c_name, int c_id);
+    virtual ~Customer(); // warnings without this
 
     virtual std::vector<int> order(const std::vector<Dish> &menu)=0;
     virtual std::string toString() const = 0;
-	Customer& operator=(const Customer &other);
-	virtual std::string getType()=0;
+	virtual std::string getType() const = 0;
 	virtual Customer* clone() = 0;
     std::string getName() const;
     int getId() const;
@@ -33,7 +32,7 @@ public:
     virtual std::vector<int> order(const std::vector<Dish> &menu);
     std::string toString() const;
     Customer *clone();
-	std::string getType();
+	std::string getType() const;
 private:
 };
 
@@ -44,7 +43,7 @@ public:
     std::vector<int> order(const std::vector<Dish> &menu);
     std::string toString() const;
     Customer *clone();
-	std::string getType();
+	std::string getType() const;
     bool hasOrdered();
     void setOrdered(bool newState);
 
@@ -61,7 +60,7 @@ public:
     Customer *clone();
     bool hasOrdered();
     void setOrdered(bool newState);
-	std::string getType();
+	std::string getType() const;
 private:
     bool ordered;
 };
@@ -73,8 +72,7 @@ public:
     std::vector<int> order(const std::vector<Dish> &menu);
     std::string toString() const;
     Customer *clone();
-	std::string getType();
-    int getDrinksHad();
+	std::string getType() const;
     void increaseDrinksHad();
 private:
     int numberOfDrinksHad;

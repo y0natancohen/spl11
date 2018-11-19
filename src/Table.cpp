@@ -1,7 +1,3 @@
-//
-// Created by yonatan on 11/8/18.
-//
-
 #include "../include/Table.h"
 #include <iostream>
 
@@ -23,7 +19,6 @@ void Table::removeCustomer(int id) {
     for (unsigned i = 0; i < customersList.size(); ++i) {
         if (customersList[i]->getId() == id) {
 
-//            delete customersList[i]; // DO NOT DELETE HERE! move customer is using it
             customersList.erase(customersList.begin() + i);
             break;
         }
@@ -67,7 +62,7 @@ Dish Table::getDish(const std::vector<Dish> &menu, int d_id) {
             return dish;
         }
     }
-    return Dish(1,"1",1,BVG); // should never reach here
+    return Dish(1,"1",1,BVG); // should never reach here saves a warning
 }
 
 void Table::openTable() {
@@ -96,10 +91,6 @@ Table::~Table() {
 }
 
 
-void Table::clearCustomers() {
-    customersList.clear();
-}
-
 std::vector<OrderPair> Table::getCustomerOrders(int id) {
     std::vector<OrderPair> result;
     for (auto order: orderList) {
@@ -126,7 +117,6 @@ void Table::removeCustomerOrders(int id) {
     }
     for (auto i: keppIndexes) {
         tempList.push_back(orderList[i]);
-//        orderList.erase(orderList.begin() + i);
     }
     orderList.clear();
     for (unsigned j = 0; j < tempList.size(); ++j) {

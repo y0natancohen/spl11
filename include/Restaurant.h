@@ -16,6 +16,7 @@ public:
     Restaurant(Restaurant &&other); // move con
     Restaurant& operator=(Restaurant &&other); // move ass op
     virtual ~Restaurant();
+
     void cleanOther(Restaurant &other);
     void StealFromOtherToMe(const Restaurant &other);
     void copyFromOtherIntoMe(const Restaurant &other);
@@ -23,7 +24,7 @@ public:
     void start();
     int getNumOfTables() const;
     Table* getTable(int ind);
-    const std::vector<BaseAction*>& getActionsLog() const; // Return a reference to the history of actions
+    const std::vector<BaseAction*>& getActionsLog() const;
     std::vector<Dish>& getMenu();
     std::vector<std::string> split(const std::string& s, char delimiter);
     std::vector<std::string> getLines(const std::string &configFilePath);
