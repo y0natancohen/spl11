@@ -276,7 +276,6 @@ void Restaurant::copyFromOtherIntoMe(const Restaurant &other) {
     }
 }
 
-//todo:ask joni why isnt it the same logic as here above
 void Restaurant::StealFromOtherToMe(const Restaurant &other) {
     nextCustomerId = other.nextCustomerId;
     open = other.open;

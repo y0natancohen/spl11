@@ -1,6 +1,5 @@
-//#include "Restaurant.h"
+include "Restaurant.h"
 #include <iostream>
-#include "../include/Restaurant.h"
 
 using namespace std;
 

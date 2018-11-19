@@ -8,6 +8,8 @@
 #include "../include/Customer.h"
 #include "../include/Dish.h"
 
+extern Restaurant *backup;
+
 BaseAction::BaseAction() {
     status = PENDING;
 }
@@ -232,7 +234,9 @@ std::string BackupRestaurant::toString() const {
 }
 
 void BackupRestaurant::act(Restaurant &restaurant) {
-    extern Restaurant *backup;
+    if (backup != nullptr) {
+        delete backup;
+    }
     backup = new Restaurant(restaurant);
     complete();
 }
@@ -354,22 +358,13 @@ std::string CloseAll::toString() const {
 }
 
 void CloseAll::act(Restaurant &restaurant) {
-    std::vector<int> openTables;
     for (int i = 0; i < restaurant.getNumOfTables(); i++) {
         Table *t = restaurant.getTable(i);
         if (t->isOpen()) {
-            openTables.push_back(i);
+            Close *closeAct = new Close(i);
+            closeAct->act(restaurant);
+            delete closeAct;
         }
-    }
-    unsigned counter=0;
-    for(auto tableId: openTables){
-        counter++;
-        Close *closeAct = new Close(tableId);
-        if (counter == openTables.size()) { // is last
-            closeAct->setfinalClose(true);
-        }
-        closeAct->act(restaurant);
-        delete closeAct;
     }
     restaurant.closeRestuarant();
     complete();
