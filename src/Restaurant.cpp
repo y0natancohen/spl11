@@ -9,57 +9,45 @@
 #include "../include/Restaurant.h"
 
 
-Restaurant::Restaurant() : nextDishId(0), nextCustomerId(0), open(true) {}
+Restaurant::Restaurant() : nextCustomerId(0), open(true) {}
 
 
 //todo:refactor split code
 Restaurant::Restaurant(const std::string &configFilePath) :
-        nextDishId(0), nextCustomerId(0), open(true) {
+        nextCustomerId(0), open(true) {
     std::vector<std::string> lines = getLines(configFilePath);
-    // going over the lines
-    int num_of_tables_index = 0;
-    int tables_desc_index = 0;
-    unsigned menu_index = 0;
-    for (unsigned i = 0; i < lines.size(); ++i) {
-        if (lines[i] == "#number of tables") {
-            num_of_tables_index = i + 1;
-        }
-        if (lines[i] == "#tables description") {
-            tables_desc_index = i + 1;
-        }
-        if (lines[i] == "#Menu") {
-            menu_index = i + 1;
+    std::vector<std::string> filteredLines;
+
+    for (auto line : lines) {
+        if (!line.empty() && line.find('#') == std::string::npos) {
+            filteredLines.push_back(line);
         }
     }
-    // making the tables
-    int num_tables = std::stoi(lines[num_of_tables_index]);
-    std::string table_desc_s = lines[tables_desc_index];
-    std::vector<std::string> sizes = split(table_desc_s, ',');
-    if ((int) sizes.size() != num_tables) {
-        return;
-    }
-    for (auto size_s: sizes) {
-        int size = std::stoi(size_s);
-        Table *table = new Table(size);
+
+
+    std::string capacitiesString = filteredLines[1];
+    std::vector<std::string> capacities = split(capacitiesString, ',');
+
+    for (auto size_s: capacities) {
+        int capacity = std::stoi(size_s);
+        Table *table = new Table(capacity);
         tables.push_back(table);
     }
+
     // making the menu
     int tempNextDishId = 0;
-    for (unsigned i = 0; i < lines.size(); ++i) {
-        if (i >= menu_index) {  // menu lines
-            std::string line = lines[i];
-            std::vector<std::string> params = split(line, ',');
-            std::string d_name = params[0];
-            int d_price = std::stoi(params[2]);
-            int d_id = tempNextDishId;
-            std::string type_s = params[1];
-            DishType d_type = getType(type_s);
-            menu.push_back(Dish(d_id, d_name, d_price, d_type));
-            ++tempNextDishId;
-        }
+    for (unsigned i = 2; i < filteredLines.size(); ++i) {
+        std::string line = filteredLines[i];
+        std::vector<std::string> params = split(line, ',');
+        std::string d_name = params[0];
+        int d_price = std::stoi(params[2]);
+        int d_id = tempNextDishId;
+        std::string type_s = params[1];
+        DishType d_type = getType(type_s);
+        menu.push_back(Dish(d_id, d_name, d_price, d_type));
+        ++tempNextDishId;
     }
     //important
-    nextDishId = tempNextDishId;
     //
     open = true;
 }
@@ -141,7 +129,7 @@ void Restaurant::start() {
 }
 
 void Restaurant::cleanTempCustomers(std::vector<Customer *> &customers) {
-    for (auto cust: customers){
+    for (auto cust: customers) {
         delete cust;
     }
     customers.clear();
@@ -273,7 +261,6 @@ void Restaurant::cleanMySelf() {
 
 
 void Restaurant::copyFromOtherIntoMe(const Restaurant &other) {
-    nextDishId = other.nextDishId;
     nextCustomerId = other.nextCustomerId;
     open = other.open;
     // we are generating new tables!
@@ -291,7 +278,6 @@ void Restaurant::copyFromOtherIntoMe(const Restaurant &other) {
 
 //todo:ask joni why isnt it the same logic as here above
 void Restaurant::StealFromOtherToMe(const Restaurant &other) {
-    nextDishId = other.nextDishId;
     nextCustomerId = other.nextCustomerId;
     open = other.open;
     for (auto table : other.tables) {

@@ -13,6 +13,7 @@ public:
     std::string getName() const;
     int getPrice() const;
     DishType getType() const;
+
 private:
     int id;
     std::string name;

@@ -4,7 +4,14 @@
 6,4,4,14,10,10
 #Menu
 Beer,ALC,50
+kaki,ALC,30
+hara,ALC,30
+pipi,ALC,50
+sheten,ALC,50
+urine,ALC,50
 Salad,VEG,40
 Water,BVG,10
 Wine,ALC,60
+Wiskey,ALC,60
+SingleWiskey,ALC,600
 Chili Con Carne,SPC,200

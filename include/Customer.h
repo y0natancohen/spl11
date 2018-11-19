@@ -77,7 +77,7 @@ public:
     int getDrinksHad();
     void increaseDrinksHad();
 private:
-    int drinksHad;
+    int numberOfDrinksHad;
 
 };
 

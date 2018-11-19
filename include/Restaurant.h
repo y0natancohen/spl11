@@ -33,7 +33,6 @@ public:
     void initiateCustomersByType(const std::vector<std::string> &words, std::vector<Customer *> &customers);
 
 private:
-    int nextDishId;
     int nextCustomerId;
     bool open;
     std::vector<Table*> tables;

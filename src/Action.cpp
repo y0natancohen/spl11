@@ -372,22 +372,22 @@ void MoveCustomer::act(Restaurant &restaurant) {
     Table *dest = restaurant.getTable(dstTable);
 
     if ((source == nullptr) || (dest == nullptr)) {
-        error("Cannot move customer ptrshit");
+        error("Cannot move customer");
         return;
     }
 
     if ((!source->isOpen()) || (!dest->isOpen())) {
-        error("Cannot move customer dest shit");
+        error("Cannot move customer");
         return;
     }
 
     if ((int) dest->getCustomers().size() >= (int) dest->getCapacity()) { // table is full
-        error("Cannot move customer capacity shit");
+        error("Cannot move customer");
         return;
     }
     Customer *mover = source->getCustomer(id);
     if (mover == nullptr) {
-        error("Cannot move customer no mover loser");
+        error("Cannot move customer");
         return;
     }
     source->removeCustomer(id);
@@ -398,6 +398,10 @@ void MoveCustomer::act(Restaurant &restaurant) {
     if (source->getCustomers().empty()) { // table is empty
         source->closeTable();
     }
+//    source = nullptr;
+//    dest = nullptr;
+//    mover = nullptr;
+
     complete();
 }
 
