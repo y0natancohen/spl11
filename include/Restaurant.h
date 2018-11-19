@@ -41,6 +41,8 @@ private:
     std::vector<BaseAction*> actionsLog;
 
     void handleCustomerIdsGeneration(int size);
+
+    void cleanTempCustomers(std::vector<Customer *> &customers);
 };
 
 #endif

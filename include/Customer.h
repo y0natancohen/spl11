@@ -45,7 +45,11 @@ public:
     std::string toString() const;
     Customer *clone();
 	std::string getType();
+    bool hasOrdered();
+    void setOrdered(bool newState);
+
 private:
+    bool ordered;
 };
 
 

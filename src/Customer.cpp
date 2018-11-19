@@ -83,30 +83,33 @@ std::string VegetarianCustomer::getType() {
 
 
 CheapCustomer::CheapCustomer(std::string name, int id) :
-                Customer(name, id) {}
+                Customer(name, id), ordered(false) {}
 
 std::vector<int> CheapCustomer::order(const std::vector<Dish> &menu) {
     // cheapest dish in the menu
 //    int dish = getCorrectId(menu, BVG, 0, false, true);
     std::vector<int> result;
-    if (menu.size() <=  0){
-        return result;
-    }
-    std::vector<SortableDish> dishes;
-    for (auto dish: menu){
-        dishes.push_back(SortableDish(dish));
-    }
-    if (dishes.size() > 0){
-        sortByPrice(dishes);
-        int lowest_price = dishes[0].getPrice();
-        std::vector<SortableDish> same_prices;
-        for (auto dish: dishes){
-            if (dish.getPrice() == lowest_price){
-                same_prices.push_back(dish);
-            }
+    if (not hasOrdered()){
+        if (menu.size() <=  0){
+            return result;
         }
-        sortById(same_prices);
-        result.push_back(same_prices[0].getId());
+        std::vector<SortableDish> dishes;
+        for (auto dish: menu){
+            dishes.push_back(SortableDish(dish));
+        }
+        if (dishes.size() > 0){
+            sortByPrice(dishes);
+            int lowest_price = dishes[0].getPrice();
+            std::vector<SortableDish> same_prices;
+            for (auto dish: dishes){
+                if (dish.getPrice() == lowest_price){
+                    same_prices.push_back(dish);
+                }
+            }
+            sortById(same_prices);
+            result.push_back(same_prices[0].getId());
+            setOrdered(true);
+        }
     }
     return result;
 }
@@ -121,6 +124,14 @@ Customer *CheapCustomer::clone() {
 
 std::string CheapCustomer::getType() {
     return "chp";
+}
+
+bool CheapCustomer::hasOrdered() {
+    return ordered;
+}
+
+void CheapCustomer::setOrdered(bool newState) {
+    ordered = newState;
 }
 
 

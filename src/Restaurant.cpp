@@ -105,6 +105,7 @@ void Restaurant::start() {
             tableId = std::stoi(words[1]);
             initiateCustomersByType(words, customers);
             action = new OpenTable(tableId, customers);
+            cleanTempCustomers(customers);
         } else if (words[0] == "order") { //order from table-id
             tableId = std::stoi(words[1]);
             action = new Order(tableId);
@@ -137,6 +138,13 @@ void Restaurant::start() {
             }
         }
     }
+}
+
+void Restaurant::cleanTempCustomers(std::vector<Customer *> &customers) {
+    for (auto cust: customers){
+        delete cust;
+    }
+    customers.clear();
 }
 
 void Restaurant::initiateCustomersByType(const std::vector<std::string> &words, std::vector<Customer *> &customers) {
